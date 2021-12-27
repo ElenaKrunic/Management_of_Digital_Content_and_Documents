@@ -1,0 +1,7 @@
+{
+  "analysis": {
+    "analyzer": {
+      "type" : "serbian_analyzer"
+      }
+    }
+}
