@@ -4,8 +4,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -20,20 +18,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Seller extends User {
-		
-	@Column(name = "operatesSince", nullable = true)
-	private Date operatesSince; 
+public class Buyer extends User {
+	
+	@Column(name = "address", nullable = true)
+	@Field(type = FieldType.Text)
+	private String address; 
 	
 	@Column(name = "email", nullable = true)
 	private String email; 
 	
-	@Column(name = "address", nullable = false)
-	private String address; 
 	
-	@Column(name = "storeName", nullable = true)
-	private String storeName; 
-	
-	private String searchSimilar;
-	private String loadByUsername; 
 }

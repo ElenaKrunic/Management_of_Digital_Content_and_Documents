@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import elena.ues.model.BuyerRequest;
 import elena.ues.model.LoginRequest;
+import elena.ues.model.SellerRequest;
+import elena.ues.model.StringResponse;
 import elena.ues.model.User;
 import elena.ues.repository.UserRepository;
 import elena.ues.security.util.JwtUtil;
@@ -40,6 +43,14 @@ public class UserController {
 		return new ResponseEntity<String>(jwtToken, HttpStatus.OK);
 	}
 	
+	/*
+	@PostMapping("/loginDva")
+	public ResponseEntity<String> loginDva(@RequestBody LoginRequest login) {
+		User user = userRepository.findByUsernameAndPassword(login.getUsername(), login.getPassword());
+		String jwtToken = jwtUtil.
+	}
+	*/
+	
 	@GetMapping("getUser/{id}")
 	public Optional<User> get(@PathVariable("id") Long id) {
 		return userRepository.findById(id);
@@ -51,4 +62,26 @@ public class UserController {
 		return userRepository.findAll();
 	}
 	
+	//registruj prodvca 
+	@PostMapping("/registerSeller")
+	public ResponseEntity<?> registerSeller(@RequestBody SellerRequest sellerRequest) {
+		try {
+			String register = userService.registerSeller(sellerRequest);
+			return new ResponseEntity<>(new StringResponse(register), HttpStatus.OK);
+		} catch (Exception e ) {
+			e.printStackTrace();
+            return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PostMapping("/registerBuyer")
+	public ResponseEntity<?> registerBuyer(@RequestBody BuyerRequest buyerRequest) {
+		try {
+			String register = userService.registerBuyer(buyerRequest);
+			return new ResponseEntity<>(new StringResponse(register), HttpStatus.OK);
+		} catch (Exception e ) {
+			e.printStackTrace();
+            return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+		}
+	}
 }

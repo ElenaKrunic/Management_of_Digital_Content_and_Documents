@@ -32,14 +32,4 @@ public class SellerController {
 	private List<ArticleResponse> getArticlesForSeller(@PathVariable("id") Long id) {
 		return sellerService.findArticlesForSeller(id);
 	}
-	
-	@PostMapping("/loginSeller")
-	public ResponseEntity<String> login(@RequestBody LoginRequest login) {
-		UserDetails details = sellerService.loadByUsernameAndPassword(login.getUsername(), login.getPassword());
-		String jwtToken = jwtUtil.generateToken(details);
-		return new ResponseEntity<String>(jwtToken, HttpStatus.OK);
-	}
-	
-	
-
 }

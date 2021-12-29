@@ -59,12 +59,14 @@ public class JwtUtil {
 	    
 	    //moja jwt util metoda 
 	    public String generateToken(User user) {
+	    	System.out.println(">>> uloga korisnika >>>" + user.getRoles().get(0).getAuthority());
 	    	Map<String, Object> claims = new HashMap<>(); 
 	    	claims.put("id", user.getId());
 	    	claims.put("username", user.getUsername()); 
 	    	claims.put("firstname", user.getFirstname());
 	    	claims.put("lastname", user.getLastname());
 	    	claims.put("created", new Date(System.currentTimeMillis()));
+	    	claims.put("role", user.getRoles().get(0).getAuthority());
 	    	
 	    	return createToken(claims);
 	    }
