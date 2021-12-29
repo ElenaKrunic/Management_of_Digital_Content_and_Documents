@@ -16,12 +16,15 @@ public class ArticleResponse {
 	private String name; 
 	private String description; 	
 	private double price;
+	private String path;
+	private Long sellerID; 
 	
 	public ArticleResponse(ArticleModel article) {
 		this.id = article.getId(); 
 		this.name = article.getName();
 		this.description = article.getDescription(); 
 		this.price = article.getPrice();
+		this.path = article.getPath();
 	}
 
 	public ArticleResponse(String name, String description) {

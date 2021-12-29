@@ -8,4 +8,6 @@ public interface BuyerRepository extends CrudRepository<Buyer, Long> {
 
 	Buyer findByEmail(String email);
 
+	Buyer findByAddress(String address);
+
 }
