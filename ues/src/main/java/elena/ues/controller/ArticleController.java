@@ -127,6 +127,7 @@ public class ArticleController {
 		return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
 	}
 	
+	/*
 	@PostMapping("/orderArticle")
 	public ResponseEntity<?> order(@RequestBody ArticleResponse response, Principal principal) {
 		try {
@@ -137,6 +138,7 @@ public class ArticleController {
 			return new ResponseEntity<> (new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 	}
+	*/
 	
 	
 }
