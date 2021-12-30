@@ -71,13 +71,17 @@ public class ArticleController {
 		
 	}
 	
-	@GetMapping(value="/{id}")
+	
+	@GetMapping(value="article/{id}")
 	public ResponseEntity<ArticleResponse> getOne(@PathVariable("id") Long id) {
-		ArticleModel article = articleModelRepository.findById(id).orElseThrow();
+		//ArticleModel article = articleModelRepository.findById(id).orElseThrow();
+		ArticleModel article = articleModelRepository.getById(id);
 		
 		if(article == null) {
 			return new ResponseEntity<ArticleResponse>(HttpStatus.NOT_FOUND);
 		}
+		
+		System.out.println(">>> article je >>> " + article.getName());
 		
 		return new ResponseEntity<ArticleResponse>(new ArticleResponse(article), HttpStatus.OK);
 	}
@@ -100,15 +104,19 @@ public class ArticleController {
 		
 	}
 	
-	@PutMapping(consumes="application/json", value="/updateArticle/{id}")
+	@PutMapping(value="/updateArticle/{id}")
 	public ResponseEntity<ArticleResponse> updateArticle(@RequestBody ArticleResponse response, @PathVariable("id") Long id) {
 		
 		ArticleModel article = articleModelRepository.findById(id).orElseThrow();
 				
+		System.out.println(">>>> response article >>> " + response.getDescription());
+		
 		article.setDescription(response.getDescription());
 		article.setName(response.getName());
 		article.setPath(response.getPath());
 		article.setPrice(response.getPrice());
+		
+		System.out.println(">>> article >>>>" + article.getName());
 		
 		article = articleModelRepository.save(article);
 		

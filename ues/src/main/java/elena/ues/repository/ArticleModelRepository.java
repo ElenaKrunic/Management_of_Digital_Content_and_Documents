@@ -13,6 +13,8 @@ public interface ArticleModelRepository extends CrudRepository<ArticleModel, Lon
 
 	List<ArticleModel> searchArticles(org.elasticsearch.index.query.QueryBuilder query);
 
+	ArticleModel getById(Long id);
+
 
 
 }
