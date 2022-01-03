@@ -46,16 +46,6 @@ public class IndexerController {
 	@Autowired 
 	private ArticleRepository articleRepository; 
 	
-	 @GetMapping("/reindex")
-	    public ResponseEntity<String> index() throws IOException {
-	        File dataDir = getResourceFilePath("files");
-	        long start = new Date().getTime();
-	        int numIndexed = indexer.index(dataDir);
-	        long end = new Date().getTime();
-	        String text = "Indexing " + numIndexed + " files took "
-	            + (end - start) + " milliseconds";
-	        return new ResponseEntity<String>(text, HttpStatus.OK);
-	    }
 	 
 	 
 	   private File getResourceFilePath(String path) {
@@ -171,7 +161,18 @@ public class IndexerController {
 		    }
 		    
 		    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		    
+		 
+			@GetMapping("/reindex")
+			    public ResponseEntity<String> index() throws IOException {
+			        File dataDir = getResourceFilePath("files");
+			        long start = new Date().getTime();
+			        int numIndexed = indexer.index(dataDir);
+			        long end = new Date().getTime();
+			        String text = "Indexing " + numIndexed + " files took "
+			            + (end - start) + " milliseconds";
+			        return new ResponseEntity<String>(text, HttpStatus.OK);
+			    }
+			 
 		    @Autowired 
 		    private SellerService sellerService; 
 		    

@@ -34,13 +34,13 @@ private static int maxEdits = 1;
 		
 		if(queryType.equals(SearchType.regular)){
 			retVal = QueryBuilders.termQuery(field, value);
-			System.out.println(" >>> retVal >>>" + retVal.getName());
+			//System.out.println(" >>> retVal >>>" + retVal.getName());
 		}else if(queryType.equals(SearchType.fuzzy)){
 			retVal = QueryBuilders.fuzzyQuery(field, value).fuzziness(Fuzziness.fromEdits(maxEdits));
-			System.out.println(" >>> retVal >>>" + retVal.getName());
+			//System.out.println(" >>> retVal >>>" + retVal.getName());
 		}else if(queryType.equals(SearchType.prefix)){
 			retVal = QueryBuilders.prefixQuery(field, value);
-			System.out.println(" >>> retVal >>>" + retVal.getName());
+			//System.out.println(" >>> retVal >>>" + retVal.getName());
 		}else if(queryType.equals(SearchType.range)){
 			String[] values = value.split(" ");
 			retVal = QueryBuilders.rangeQuery(field).from(values[0]).to(values[1]);
@@ -49,8 +49,6 @@ private static int maxEdits = 1;
 			//ovo je phrase query u sustini
 			retVal = QueryBuilders.matchPhraseQuery(field, value);
 		}
-		
-		
 		
 		return retVal;
 	}

@@ -63,14 +63,15 @@ public class ArticleController {
 		List<ArticleModel> articles =  (List<ArticleModel>) articleModelRepository.findAll();
 		List<ArticleResponse> response = new ArrayList<>();
 		
+		
 		for(ArticleModel article : articles) {
 			response.add(new ArticleResponse(article));
 		}
 		
-		return new ResponseEntity<List<ArticleResponse>>(response, HttpStatus.OK);
 		
+		System.out.println(">>> response je duzine >>> "  + response.size());
+		return new ResponseEntity<List<ArticleResponse>>(response, HttpStatus.OK);
 	}
-	
 	
 	@GetMapping(value="article/{id}")
 	public ResponseEntity<ArticleResponse> getOne(@PathVariable("id") Long id) {
@@ -81,7 +82,7 @@ public class ArticleController {
 			return new ResponseEntity<ArticleResponse>(HttpStatus.NOT_FOUND);
 		}
 		
-		System.out.println(">>> article je >>> " + article.getName());
+		//System.out.println(">>> article je >>> " + article.getName());
 		
 		return new ResponseEntity<ArticleResponse>(new ArticleResponse(article), HttpStatus.OK);
 	}

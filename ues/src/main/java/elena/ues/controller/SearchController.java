@@ -30,16 +30,16 @@ public class SearchController {
 	@Autowired
 	private ResultRetriever resultRetriever; 
 	
-	
 	@PostMapping(value="/term/articles")
 	public ResponseEntity <List<ArticleResponse>> searchArticlesTermQuery(@RequestBody SimpleQuery simpleQuery) throws Exception {
 		QueryBuilder queryBuilder = elena.ues.service.search.QueryBuilder.buildQuery(SearchType.regular, simpleQuery.getField(), simpleQuery.getValue());
 		List<RequiredHighlight> rh = new ArrayList<>();
 		rh.add(new RequiredHighlight(simpleQuery.getField(), simpleQuery.getValue()));
+		System.out.println("polje " + simpleQuery.getField() + " i vrijednost " +  simpleQuery.getValue());
 		List<ArticleResponse> result = resultRetriever.getResults(queryBuilder, rh);
+		System.out.println("broj pronadjenih  " + result.size());
 		return new ResponseEntity<List<ArticleResponse>>(result, HttpStatus.OK);
 	}
-	
 	
 	@PostMapping(value="/fuzzy/articles")
 	public ResponseEntity <List<ArticleResponse>> searchArticlesFuzzyQuery(@RequestBody SimpleQuery simpleQuery) throws Exception {

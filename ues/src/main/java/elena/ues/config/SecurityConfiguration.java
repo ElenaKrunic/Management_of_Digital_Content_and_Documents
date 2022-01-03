@@ -5,11 +5,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
 	  protected void configure(HttpSecurity http) throws Exception{
@@ -17,11 +19,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
 	    }
 	  
 	  public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		  System.out.println(">>>>>>>>>>>>>>>> uslo ovde >>>>>>>>>>>>");
-	        registry.addResourceHandler("swagger-ui.html")
-	            .addResourceLocations("classpath:/META-INF/resources/");
-
-	        registry.addResourceHandler("/webjars/**")
-	            .addResourceLocations("classpath:/META-INF/resources/webjars/");
+		  System.out.println(">>>>>>>>>>>>>>>>> doslo ovde >>>>>>>>>>>>>>>>>>>>>>");
+		  registry.addResourceHandler("/static/**").addResourceLocations("file:///C:/Users/lenovo/Desktop/UES_Project/projekat/ues/src/main/resources/static/");		  
 	    }
 }
