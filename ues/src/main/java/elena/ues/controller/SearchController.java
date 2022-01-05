@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import elena.ues.model.ArticleResponse;
 import elena.ues.model.ArticleResultData;
+import elena.ues.model.ErrandResponse;
 import elena.ues.model.RequiredHighlight;
 import elena.ues.model.SearchType;
 import elena.ues.model.SimpleQuery;
@@ -36,7 +37,7 @@ public class SearchController {
 		List<RequiredHighlight> rh = new ArrayList<>();
 		rh.add(new RequiredHighlight(simpleQuery.getField(), simpleQuery.getValue()));
 		System.out.println("polje " + simpleQuery.getField() + " i vrijednost " +  simpleQuery.getValue());
-		List<ArticleResponse> result = resultRetriever.getResults(queryBuilder, rh);
+		List<ArticleResponse> result = resultRetriever.getArticleResults(queryBuilder, rh);
 		System.out.println("broj pronadjenih  " + result.size());
 		return new ResponseEntity<List<ArticleResponse>>(result, HttpStatus.OK);
 	}
@@ -46,7 +47,7 @@ public class SearchController {
 		QueryBuilder queryBuilder = elena.ues.service.search.QueryBuilder.buildQuery(SearchType.fuzzy, simpleQuery.getField(), simpleQuery.getValue());
 		List<RequiredHighlight> rh = new ArrayList<>();
 		rh.add(new RequiredHighlight(simpleQuery.getField(), simpleQuery.getValue()));
-		List<ArticleResponse> result = resultRetriever.getResults(queryBuilder, rh);
+		List<ArticleResponse> result = resultRetriever.getArticleResults(queryBuilder, rh);
 		return new ResponseEntity<List<ArticleResponse>>(result, HttpStatus.OK);
 	}
 	
@@ -55,7 +56,7 @@ public class SearchController {
 		QueryBuilder queryBuilder = elena.ues.service.search.QueryBuilder.buildQuery(SearchType.phrase, simpleQuery.getField(), simpleQuery.getValue());
 		List<RequiredHighlight> rh = new ArrayList<>();
 		rh.add(new RequiredHighlight(simpleQuery.getField(), simpleQuery.getValue()));
-		List<ArticleResponse> result = resultRetriever.getResults(queryBuilder, rh);
+		List<ArticleResponse> result = resultRetriever.getArticleResults(queryBuilder, rh);
 		return new ResponseEntity<List<ArticleResponse>>(result, HttpStatus.OK);
 	}
 	
@@ -65,7 +66,7 @@ public class SearchController {
 		QueryBuilder queryBuilder = elena.ues.service.search.QueryBuilder.buildQuery(SearchType.prefix, simpleQuery.getField(), simpleQuery.getValue());
 		List<RequiredHighlight> rh = new ArrayList<>();
 		rh.add(new RequiredHighlight(simpleQuery.getField(), simpleQuery.getValue()));
-		List<ArticleResponse> result = resultRetriever.getResults(queryBuilder, rh);
+		List<ArticleResponse> result = resultRetriever.getArticleResults(queryBuilder, rh);
 		return new ResponseEntity<List<ArticleResponse>>(result, HttpStatus.OK);
 	}
 	
@@ -74,8 +75,56 @@ public class SearchController {
 		QueryBuilder queryBuilder = elena.ues.service.search.QueryBuilder.buildQuery(SearchType.range, simpleQuery.getField(), simpleQuery.getValue());
 		List<RequiredHighlight> rh = new ArrayList<>();
 		rh.add(new RequiredHighlight(simpleQuery.getField(), simpleQuery.getValue()));
-		List<ArticleResponse> result = resultRetriever.getResults(queryBuilder, rh);
+		List<ArticleResponse> result = resultRetriever.getArticleResults(queryBuilder, rh);
 		return new ResponseEntity<List<ArticleResponse>>(result, HttpStatus.OK);
+	}
+	
+	@PostMapping(value="/term/errands")
+	public ResponseEntity <List<ErrandResponse>> searchErrandsTermQuery(@RequestBody SimpleQuery simpleQuery) throws Exception {
+		QueryBuilder queryBuilder = elena.ues.service.search.QueryBuilder.buildQuery(SearchType.regular, simpleQuery.getField(), simpleQuery.getValue());
+		List<RequiredHighlight> rh = new ArrayList<>();
+		rh.add(new RequiredHighlight(simpleQuery.getField(), simpleQuery.getValue()));
+		System.out.println("polje " + simpleQuery.getField() + " i vrijednost " +  simpleQuery.getValue());
+		List<ErrandResponse> result = resultRetriever.getErrandResults(queryBuilder, rh);
+		System.out.println("broj pronadjenih  " + result.size());
+		return new ResponseEntity<List<ErrandResponse>>(result, HttpStatus.OK);
+	}
+	
+	@PostMapping(value="/fuzzy/errands")
+	public ResponseEntity <List<ErrandResponse>> searchErrandsFuzzyQuery(@RequestBody SimpleQuery simpleQuery) throws Exception {
+		QueryBuilder queryBuilder = elena.ues.service.search.QueryBuilder.buildQuery(SearchType.fuzzy, simpleQuery.getField(), simpleQuery.getValue());
+		List<RequiredHighlight> rh = new ArrayList<>();
+		rh.add(new RequiredHighlight(simpleQuery.getField(), simpleQuery.getValue()));
+		List<ErrandResponse> result = resultRetriever.getErrandResults(queryBuilder, rh);
+		return new ResponseEntity<List<ErrandResponse>>(result, HttpStatus.OK);
+	}
+	
+	@PostMapping(value="/phrase/errands")
+	public ResponseEntity <List<ErrandResponse>> searchErrandsPhraseQuery(@RequestBody SimpleQuery simpleQuery) throws Exception {
+		QueryBuilder queryBuilder = elena.ues.service.search.QueryBuilder.buildQuery(SearchType.phrase, simpleQuery.getField(), simpleQuery.getValue());
+		List<RequiredHighlight> rh = new ArrayList<>();
+		rh.add(new RequiredHighlight(simpleQuery.getField(), simpleQuery.getValue()));
+		List<ErrandResponse> result = resultRetriever.getErrandResults(queryBuilder, rh);
+		return new ResponseEntity<List<ErrandResponse>>(result, HttpStatus.OK);
+	}
+	
+	
+	@PostMapping(value="/prefix/errands")
+	public ResponseEntity <List<ErrandResponse>> searchErrandsPrefixQuery(@RequestBody SimpleQuery simpleQuery) throws Exception {
+		QueryBuilder queryBuilder = elena.ues.service.search.QueryBuilder.buildQuery(SearchType.prefix, simpleQuery.getField(), simpleQuery.getValue());
+		List<RequiredHighlight> rh = new ArrayList<>();
+		rh.add(new RequiredHighlight(simpleQuery.getField(), simpleQuery.getValue()));
+		List<ErrandResponse> result = resultRetriever.getErrandResults(queryBuilder, rh);
+		return new ResponseEntity<List<ErrandResponse>>(result, HttpStatus.OK);
+	}
+	
+	@PostMapping(value="/range/errands")
+	public ResponseEntity <List<ErrandResponse>> searchErrandsRangeQuery(@RequestBody SimpleQuery simpleQuery) throws Exception {
+		QueryBuilder queryBuilder = elena.ues.service.search.QueryBuilder.buildQuery(SearchType.range, simpleQuery.getField(), simpleQuery.getValue());
+		List<RequiredHighlight> rh = new ArrayList<>();
+		rh.add(new RequiredHighlight(simpleQuery.getField(), simpleQuery.getValue()));
+		List<ErrandResponse> result = resultRetriever.getErrandResults(queryBuilder, rh);
+		return new ResponseEntity<List<ErrandResponse>>(result, HttpStatus.OK);
 	}
 	
 	/*

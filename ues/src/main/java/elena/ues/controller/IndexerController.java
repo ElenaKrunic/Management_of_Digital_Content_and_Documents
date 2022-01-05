@@ -27,9 +27,11 @@ import org.springframework.web.multipart.MultipartFile;
 import elena.ues.handler.Handler;
 import elena.ues.model.Article;
 import elena.ues.model.ArticleResponse;
+import elena.ues.model.ErrandResponse;
 import elena.ues.model.Seller;
 import elena.ues.repository.ArticleRepository;
 import elena.ues.repository.SellerRepository;
+import elena.ues.service.BuyerService;
 import elena.ues.service.Indexer;
 import elena.ues.service.SellerService;
 
@@ -46,11 +48,15 @@ public class IndexerController {
 	@Autowired 
 	private ArticleRepository articleRepository; 
 	
-	 
-	 
+    @Autowired 
+    private SellerService sellerService; 
+    
+    @Autowired 
+    private BuyerService buyerService;
+	
 	   private File getResourceFilePath(String path) {
 	        URL url = this.getClass().getClassLoader().getResource(path);
-	        System.out.println(">>>>> path >>>>>" + path);
+	        //System.out.println(">>>>> path >>>>>" + path);
 	        File file = null;
 	        try {
 	            file = new File(url.toURI());
@@ -172,10 +178,7 @@ public class IndexerController {
 			            + (end - start) + " milliseconds";
 			        return new ResponseEntity<String>(text, HttpStatus.OK);
 			    }
-			 
-		    @Autowired 
-		    private SellerService sellerService; 
-		    
+			     
 		    @GetMapping("/reindexArticles/seller/{id}")
 		    public ResponseEntity<String> indexArticles(@PathVariable("id") Long id) throws IOException {
 		    	long start = new Date().getTime(); 
@@ -195,5 +198,14 @@ public class IndexerController {
 		    	List<ArticleResponse> sellerArticles = sellerService.findArticlesForSeller(id);
 		    	System.out.println(">>> artikli koji se indeksiraju >>> " + sellerArticles.toString());
 		    	return new ResponseEntity<ArticleResponse>(HttpStatus.OK);
+		    }
+		    
+		    @GetMapping("reindexErrands/buyer/{id}")
+		    public ResponseEntity<String> indexErrands(@PathVariable("id") Long id) throws IOException {
+		    	long start = new Date().getTime(); 
+		    	int numIndexed = indexer.indexErrand(buyerService.findErrandsForBuyer(id)); 
+		    	long end = new Date().getTime(); 
+		    	String text = "Indexing " + numIndexed + " objects took " + (end - start) + " miliseconds"; 
+		    	return new ResponseEntity<String>(text, HttpStatus.OK);
 		    }
 }

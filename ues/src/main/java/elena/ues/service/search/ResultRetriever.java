@@ -8,10 +8,12 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import elena.ues.indexing.analysers.SerbianAnalyzer;
 import elena.ues.model.Article;
 import elena.ues.model.ArticleModel;
 import elena.ues.model.ArticleResponse;
 import elena.ues.model.ArticleResultData;
+import elena.ues.model.ErrandResponse;
 import elena.ues.model.RequiredHighlight;
 import elena.ues.repository.ArticleModelRepository;
 import elena.ues.repository.ArticleRepository;
@@ -43,7 +45,6 @@ public class ResultRetriever {
 	                .multiThreaded(true)
 	                .build());
 	        ResultRetriever.client = factory.getObject();
-
 	    }
 
 	    public static void setMaxHits(int maxHits) {
@@ -95,7 +96,7 @@ public class ResultRetriever {
 	 }
 	 */
 	
-	public List<ArticleResponse> getResults(org.elasticsearch.index.query.QueryBuilder query, List<RequiredHighlight> highlights) throws Exception {
+	public List<ArticleResponse> getArticleResults(org.elasticsearch.index.query.QueryBuilder query, List<RequiredHighlight> highlights) throws Exception {
 		
 		if(query == null) {
 			throw new Exception();
@@ -104,40 +105,74 @@ public class ResultRetriever {
 		List<ArticleResponse> results = new ArrayList<>();
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(query);
-		//System.out.println(" >>> upit koji zadajem za pretragu >>> " + query.getName());
 		
 		HighlightBuilder highlightBuilder = new HighlightBuilder();
 		highlightBuilder.field("name"); 
 		highlightBuilder.field("description");
 		highlightBuilder.field("price");
 		highlightBuilder.field("id");
-		
 		highlightBuilder.preTags("<spam style='color:red'>").postTags("</spam>");
         highlightBuilder.fragmentSize(200);
         searchSourceBuilder.highlighter(highlightBuilder);
-        
-        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex("artikli").addType("artikal").build();
-        
-       // System.out.println(" >>> search objekat ima tip i indeks >>> " + search.getType() + " " + search.getIndex());
-       
+                
+        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex("artikli").addType("artikal").build();       
         SearchResult result; 
    
         try {
         	result = client.execute(search); 
-        	//System.out.println(" >>> kad odradim client execute [jsonString] >>>" + result.getJsonString());
-        	//System.out.println(" >>> kad odradim client execute [responseCode] >>>" + result.getResponseCode());
-        	
-        	  List<SearchResult.Hit<ArticleResponse, Void>> hits = result.getHits(ArticleResponse.class);
-        	  
-        	  //System.out.println(" >>> hits su >>> " + hits.size());
-        	  
-        	  ArticleResponse rd = new ArticleResponse();
+        	 List<SearchResult.Hit<ArticleResponse, Void>> hits = result.getHits(ArticleResponse.class);        	  
+        	 ArticleResponse rd = new ArticleResponse();
 
               for (SearchResult.Hit<ArticleResponse, Void> hit : hits) {
-            	//  System.out.println(">>> jedan hit ima id >>> " + hit.id);
-            	//  System.out.println(">>> [highlight] >>> " + hit.highlight);
-            	  
-            	  
+                  for (String hf : hit.highlight.keySet() ) {
+                      for (RequiredHighlight rh : highlights) {
+                          if(hf.equals(rh.getFieldName())){
+                              String highlight = "";
+                              highlight += hit.highlight.get(hf).toString();
+                              //System.out.println(">>> highlight je >>> " + highlight.toLowerCase());
+                          }
+                      }
+                  }
+                  rd.setName(hit.source.getName());
+                  rd.setDescription(hit.source.getDescription());
+                  rd.setPrice(hit.source.getPrice());
+                  rd.setId(hit.source.getId());
+                  results.add(rd);
+              }
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
+		return results;
+	}
+	
+	public List<ErrandResponse> getErrandResults(org.elasticsearch.index.query.QueryBuilder query, List<RequiredHighlight> highlights) throws Exception {
+		
+		if(query == null) {
+			throw new Exception();
+		}
+		
+		List<ErrandResponse> results = new ArrayList<>();
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(query);
+		
+		HighlightBuilder highlightBuilder = new HighlightBuilder();
+		highlightBuilder.field("orderedAtDate"); 
+		highlightBuilder.field("isDelivered");
+		highlightBuilder.field("grade");
+		highlightBuilder.field("comment");
+		highlightBuilder.preTags("<spam style='color:red'>").postTags("</spam>");
+        highlightBuilder.fragmentSize(200);
+        searchSourceBuilder.highlighter(highlightBuilder);
+                
+        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex("artikli").addType("artikal").build();       
+        SearchResult result; 
+   
+        try {
+        	result = client.execute(search); 
+        	 List<SearchResult.Hit<ErrandResponse, Void>> hits = result.getHits(ErrandResponse.class);        	  
+        	 ErrandResponse rd = new ErrandResponse();
+
+              for (SearchResult.Hit<ErrandResponse, Void> hit : hits) {
                   for (String hf : hit.highlight.keySet() ) {
                       for (RequiredHighlight rh : highlights) {
                           if(hf.equals(rh.getFieldName())){
@@ -148,18 +183,15 @@ public class ResultRetriever {
                       }
                   }
                   
-                  
-                  rd.setName(hit.source.getName());
-                  rd.setDescription(hit.source.getDescription());
-                  rd.setPrice(hit.source.getPrice());
-                  rd.setId(hit.source.getId());
-                  
+                  rd.setOrderedAtDate(hit.source.getOrderedAtDate());
+                  rd.setDelivered(hit.source.isDelivered());
+                  rd.setGrade(hit.source.getGrade());
+                  rd.setComment(hit.source.getComment());
                   results.add(rd);
               }
         } catch (Exception e) {
         	e.printStackTrace();
         }
-       
 		return results;
 	}
 	

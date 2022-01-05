@@ -23,6 +23,8 @@ import org.thymeleaf.TemplateEngine;
 
 import elena.ues.model.ArticleModel;
 import elena.ues.model.ArticleResponse;
+import elena.ues.model.ErrandResponse;
+import elena.ues.model.ItemResponse;
 import elena.ues.model.Seller;
 import elena.ues.model.StringResponse;
 import elena.ues.model.User;
@@ -136,18 +138,17 @@ public class ArticleController {
 		return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
 	}
 	
-	/*
+	
 	@PostMapping("/orderArticle")
-	public ResponseEntity<?> order(@RequestBody ArticleResponse response, Principal principal) {
+	public ResponseEntity<?> order(@RequestBody ArticleResponse articleResponse, 
+			@RequestBody ErrandResponse errandResponse, 
+			@RequestBody ItemResponse itemResponse, Principal principal) {
 		try {
-			String message = articleService.orderArticle(response, "elenakrunic@gmail.com");
+			String message = articleService.orderArticle(articleResponse, errandResponse, itemResponse, "elenakrunic@gmail.com");
 			return new ResponseEntity<> (new StringResponse(message), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<> (new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 	}
-	*/
-	
-	
 }

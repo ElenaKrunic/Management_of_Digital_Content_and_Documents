@@ -9,13 +9,18 @@ import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.config.HttpClientConfig;
 import io.searchbox.core.Index;
+import io.searchbox.indices.Analyze;
 
+import org.apache.lucene.analysis.custom.CustomAnalyzer;
+import org.elasticsearch.index.IndexSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import elena.ues.handler.Handler;
+import elena.ues.indexing.analysers.SerbianAnalyzer;
 import elena.ues.model.Article;
 import elena.ues.model.ArticleResponse;
+import elena.ues.model.ErrandResponse;
 import elena.ues.repository.ArticleRepository;
 
 @Service
@@ -120,9 +125,10 @@ public class Indexer {
 	  public int indexArticle(List<ArticleResponse> articles) throws IOException {
 		  JestResult result = null;
 		  int retVal = 0; 
-		  
+	
 		  for(ArticleResponse article : articles) {
 	            Index index = new Index.Builder(article).index("artikli").type("artikal").id(article.getId().toString()).build();
+	             
 	            result = jestClient.execute(index);
 		  }
 		  
@@ -132,4 +138,20 @@ public class Indexer {
 			  return -1; 
 		  }
 	  }
+
+	public int indexErrand(List<ErrandResponse> errands) throws IOException {
+		JestResult result = null; 
+		int retVal = 0; 
+		
+		for(ErrandResponse errand : errands) {
+			Index index = new Index.Builder(errand).index("porudzbine").type("porudzbina").id(errand.getId().toString()).build();
+			result = jestClient.execute(index);
+		}
+		
+		  if(result.isSucceeded()) {
+			  return retVal += errands.size();
+		  } else {
+			  return -1; 
+		  }
+	}
 }

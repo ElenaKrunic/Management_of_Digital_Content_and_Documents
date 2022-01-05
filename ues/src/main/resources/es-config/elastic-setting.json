@@ -1,7 +1,18 @@
 {
-  "analysis": {
-    "analyzer": {
-      "type" : "serbian_analyzer"
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 1
+    ,
+    "analysis": {
+      "analyzer": {
+        "analyzer-name": {
+          "type": "serbian_analyzer"
+         }
       }
     }
+  },
+  "mappings": {
+      "artikli": {
+    }
+  }
 }

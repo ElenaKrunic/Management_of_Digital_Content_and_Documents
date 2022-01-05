@@ -18,7 +18,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Document(indexName = "article", createIndex = true)
+@Document(indexName = "articles", createIndex = false)
+@Setting(settingPath="es-config/elastic-setting.json")
 public class Article {
 	
 	@Field(type = FieldType.Keyword)
