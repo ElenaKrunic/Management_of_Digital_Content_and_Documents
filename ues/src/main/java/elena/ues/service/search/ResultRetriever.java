@@ -157,14 +157,14 @@ public class ResultRetriever {
 		
 		HighlightBuilder highlightBuilder = new HighlightBuilder();
 		highlightBuilder.field("orderedAtDate"); 
-		highlightBuilder.field("isDelivered");
+		//highlightBuilder.field("isDelivered");
 		highlightBuilder.field("grade");
 		highlightBuilder.field("comment");
 		highlightBuilder.preTags("<spam style='color:red'>").postTags("</spam>");
         highlightBuilder.fragmentSize(200);
         searchSourceBuilder.highlighter(highlightBuilder);
                 
-        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex("artikli").addType("artikal").build();       
+        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex("porudzbine").addType("porudzbina").build();       
         SearchResult result; 
    
         try {
@@ -184,7 +184,7 @@ public class ResultRetriever {
                   }
                   
                   rd.setOrderedAtDate(hit.source.getOrderedAtDate());
-                  rd.setDelivered(hit.source.isDelivered());
+                  //rd.setDelivered(hit.source.isDelivered());
                   rd.setGrade(hit.source.getGrade());
                   rd.setComment(hit.source.getComment());
                   results.add(rd);
