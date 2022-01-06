@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,14 +24,38 @@ import elena.ues.model.ErrandResponse;
 import elena.ues.model.RequiredHighlight;
 import elena.ues.model.SearchType;
 import elena.ues.model.SimpleQuery;
+import elena.ues.service.ArticleService;
 import elena.ues.service.search.ResultRetriever;
 
 @RestController
 @RequestMapping("api/search")
 public class SearchController {
 	
+	@Autowired 
+	private ArticleService articleService; 
+	
 	@Autowired
 	private ResultRetriever resultRetriever; 
+	
+	@GetMapping("/gteRange/{price}/articles")
+	public List<ArticleResponse> getAllGteArticles(@PathVariable("price") double price) {
+		return articleService.getAllGteArticles(price);
+	}
+	
+	@GetMapping("/gtRange/{price}/articles")
+	public List<ArticleResponse> getAllGtArticles(@PathVariable("price") double price) {
+		return articleService.getAllGtArticles(price);
+	}
+	
+	@GetMapping("/lteRange/{price}/articles")
+	public List<ArticleResponse> getAllLteArticles(@PathVariable("price") double price) {
+		return articleService.getAllLteArticles(price);
+	}
+	
+	@GetMapping("/ltRange/{price}/articles")
+	public List<ArticleResponse> getAllLtArticles(@PathVariable("price") double price) {
+		return articleService.getAllLtArticles(price);
+	}
 	
 	@PostMapping(value="/term/articles")
 	public ResponseEntity <List<ArticleResponse>> searchArticlesTermQuery(@RequestBody SimpleQuery simpleQuery) throws Exception {

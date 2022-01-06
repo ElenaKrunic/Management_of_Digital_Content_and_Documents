@@ -1,7 +1,17 @@
 package elena.ues.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import elena.ues.model.ArticleModel;
 import elena.ues.model.ArticleResponse;
@@ -17,10 +27,17 @@ import elena.ues.repository.ErrandModelRepository;
 import elena.ues.repository.ItemModelRepository;
 import elena.ues.repository.SellerRepository;
 import elena.ues.repository.UserRepository;
+import elena.ues.service.search.SearchUtil;
+import io.searchbox.client.JestClient;
+import io.searchbox.client.JestClientFactory;
+import io.searchbox.client.config.HttpClientConfig;
 
 @Service
 public class ArticleService {
 	
+	@Autowired 
+    private RestHighLevelClient client;
+		
 	@Autowired
 	private BuyerRepository buyerRepository; 
 	
@@ -38,6 +55,8 @@ public class ArticleService {
 	
 	@Autowired 
 	ItemModelRepository itemModelRepository; 
+	
+    private static final com.fasterxml.jackson.databind.ObjectMapper MAPPER = new ObjectMapper();
 
 
 	public String orderArticle(ArticleResponse articleResponse, ErrandResponse errandResponse, ItemResponse itemResponse, String address) {
@@ -68,6 +87,59 @@ public class ArticleService {
 		
 		return "You successfully ordered an article! ";
 	}
+	
+
+
+	private List<ArticleResponse> searchInternal(final SearchRequest request) {
+		if (request == null) {
+			return null; 
+		}
+		
+		try {
+			final SearchResponse response = client.search(request, RequestOptions.DEFAULT);
+			final SearchHit[] searchHits = response.getHits().getHits();
+			final List<ArticleResponse> articles = new ArrayList<>(searchHits.length);
+			for(SearchHit hit : searchHits) {
+				articles.add(MAPPER.readValue(hit.getSourceAsString(), ArticleResponse.class));
+			}
+			
+			return articles;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null; 
+	}
+
+
+	public List<ArticleResponse> getAllGteArticles(double price) {
+		final SearchRequest request = SearchUtil.buildGteArticlesSearchRequest("artikli", "price", price);
+		return searchInternal(request);
+	}
+
+
+
+	public List<ArticleResponse> getAllGtArticles(double price) {
+		final SearchRequest request = SearchUtil.buildGtArticlesSearchRequest("artikli", "price", price);
+		return searchInternal(request);
+	}
+
+
+
+	public List<ArticleResponse> getAllLteArticles(double price) {
+		final SearchRequest request = SearchUtil.buildLteArticlesSearchRequest("artikli", "price", price);
+		return searchInternal(request);
+	}
+
+
+
+	public List<ArticleResponse> getAllLtArticles(double price) {
+		final SearchRequest request = SearchUtil.buildLtSearchRequest("artikli", "price", price);
+		return searchInternal(request);
+	}
+	
+	
 	
 
 }
