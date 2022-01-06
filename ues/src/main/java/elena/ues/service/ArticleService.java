@@ -100,6 +100,7 @@ public class ArticleService {
 			final SearchHit[] searchHits = response.getHits().getHits();
 			final List<ArticleResponse> articles = new ArrayList<>(searchHits.length);
 			for(SearchHit hit : searchHits) {
+				System.out.println(" search hits " + searchHits.length);
 				articles.add(MAPPER.readValue(hit.getSourceAsString(), ArticleResponse.class));
 			}
 			
@@ -118,28 +119,18 @@ public class ArticleService {
 		return searchInternal(request);
 	}
 
-
-
 	public List<ArticleResponse> getAllGtArticles(double price) {
 		final SearchRequest request = SearchUtil.buildGtArticlesSearchRequest("artikli", "price", price);
 		return searchInternal(request);
 	}
 
-
-
 	public List<ArticleResponse> getAllLteArticles(double price) {
 		final SearchRequest request = SearchUtil.buildLteArticlesSearchRequest("artikli", "price", price);
 		return searchInternal(request);
 	}
-
-
-
+	
 	public List<ArticleResponse> getAllLtArticles(double price) {
 		final SearchRequest request = SearchUtil.buildLtSearchRequest("artikli", "price", price);
 		return searchInternal(request);
 	}
-	
-	
-	
-
 }

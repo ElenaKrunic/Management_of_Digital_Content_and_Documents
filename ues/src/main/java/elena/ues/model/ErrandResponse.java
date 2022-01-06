@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import elena.ues.repository.PhotoRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,12 +16,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ErrandResponse {
 	
+	@JsonProperty
 	private Long id;
-	private Date orderedAtDate; 
+	
+	@JsonProperty
+	private Date orderedAtDate;
+	
+	@JsonProperty
 	private boolean isDelivered; 
-	private int grade; 
+	
+	@JsonProperty
+	private int grade;
+	
+	@JsonProperty
 	private String comment; 
+	
+	@JsonProperty
 	private boolean anonymousComment;
+	
+	@JsonProperty
 	private boolean archivedComment; 
 	
 	public ErrandResponse(ErrandModel errand) {

@@ -25,6 +25,7 @@ import elena.ues.model.RequiredHighlight;
 import elena.ues.model.SearchType;
 import elena.ues.model.SimpleQuery;
 import elena.ues.service.ArticleService;
+import elena.ues.service.ErrandService;
 import elena.ues.service.search.ResultRetriever;
 
 @RestController
@@ -35,7 +36,10 @@ public class SearchController {
 	private ArticleService articleService; 
 	
 	@Autowired
-	private ResultRetriever resultRetriever; 
+	private ResultRetriever resultRetriever;
+	
+	@Autowired 
+	private ErrandService errandService; 
 	
 	@GetMapping("/gteRange/{price}/articles")
 	public List<ArticleResponse> getAllGteArticles(@PathVariable("price") double price) {
@@ -151,6 +155,26 @@ public class SearchController {
 		rh.add(new RequiredHighlight(simpleQuery.getField(), simpleQuery.getValue()));
 		List<ErrandResponse> result = resultRetriever.getErrandResults(queryBuilder, rh);
 		return new ResponseEntity<List<ErrandResponse>>(result, HttpStatus.OK);
+	}
+	
+	@GetMapping("/gteRange/{grade}/errands")
+	public List<ErrandResponse> getAllGteErrands(@PathVariable("grade") int grade) {
+		return errandService.getAllGteErrands(grade);
+	}
+	
+	@GetMapping("/gtRange/{grade}/errands")
+	public List<ErrandResponse> getAllGtErrands(@PathVariable("grade") int grade) {
+		return errandService.getAllGtErrands(grade);
+	}
+	
+	@GetMapping("/lteRange/{grade}/errands")
+	public List<ErrandResponse> getAllLteErrands(@PathVariable("grade") int grade) {
+		return errandService.getAllLteErrands(grade);
+	}
+	
+	@GetMapping("/ltRange/{grade}/errands")
+	public List<ErrandResponse> getAllLtErrands(@PathVariable("grade") int grade) {
+		return errandService.getAllLtErrands(grade);
 	}
 	
 	/*

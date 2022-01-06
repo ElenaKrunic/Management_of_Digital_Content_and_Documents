@@ -3,9 +3,17 @@ package elena.ues.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import elena.ues.model.ArticleResponse;
 import elena.ues.model.Buyer;
 import elena.ues.model.ErrandModel;
 import elena.ues.model.ErrandResponse;
@@ -13,16 +21,22 @@ import elena.ues.model.User;
 import elena.ues.repository.BuyerRepository;
 import elena.ues.repository.ErrandModelRepository;
 import elena.ues.repository.UserRepository;
+import elena.ues.service.search.SearchUtil;
 
 @Service
 public class ErrandService {
 
+	@Autowired 
+    private RestHighLevelClient client;
+		
 	@Autowired
 	private ErrandModelRepository errandModelRepository;
 
 	@Autowired 
 	private UserRepository userRepository;
 	
+    private static final com.fasterxml.jackson.databind.ObjectMapper MAPPER = new ObjectMapper();
+
 	@Autowired 
 	private BuyerRepository buyerRepository;
 	
@@ -47,7 +61,7 @@ public class ErrandService {
 			tmp.setAnonymousComment(errand.isAnonymousComment());
 			tmp.setArchivedComment(errand.isArchivedComment());
 			tmp.setComment(errand.getComment());
-			tmp.setDelivered(errand.isDelivered());
+			//tmp.setDelivered(errand.isDelivered());
 			tmp.setGrade(errand.getGrade());
 			
 			response.add(tmp);
@@ -55,5 +69,49 @@ public class ErrandService {
 		}
 		
 		return response;
+	}
+	
+	private List<ErrandResponse> searchInternal(final SearchRequest request) {
+		if (request == null) {
+			return null; 
+		}
+		
+		try {
+			final SearchResponse response = client.search(request, RequestOptions.DEFAULT);
+			final SearchHit[] searchHits = response.getHits().getHits();
+			final List<ErrandResponse> errands = new ArrayList<>(searchHits.length);
+			for(SearchHit hit : searchHits) {
+				System.out.println(" >>> search hits >>> " + searchHits.length);
+				errands.add(MAPPER.readValue(hit.getSourceAsString(), ErrandResponse.class));
+			}
+			
+			return errands;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null; 
+	}
+
+	public List<ErrandResponse> getAllGteErrands(int grade) {
+		System.out.println(">>>> pogodojeno <<<< ");
+		final SearchRequest request = SearchUtil.buildGteErrandsSearchRequest("porudzbine", "grade", grade);
+		return searchInternal(request);
+	}
+
+	public List<ErrandResponse> getAllGtErrands(int grade) {
+		final SearchRequest request = SearchUtil.buildGtErrandsSearchRequest("porudzbine", "grade", grade);
+		return searchInternal(request);
+	}
+
+	public List<ErrandResponse> getAllLteErrands(int grade) {
+		final SearchRequest request = SearchUtil.buildLteErrandsSearchRequest("porudzbine", "grade", grade);
+		return searchInternal(request);
+	}
+
+	public List<ErrandResponse> getAllLtErrands(int grade) {
+		final SearchRequest request = SearchUtil.buildLtErrandsSearchRequest("porudzbine", "grade", grade);
+		return searchInternal(request);
 	}
 }
