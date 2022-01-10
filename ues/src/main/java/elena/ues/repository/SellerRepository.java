@@ -13,5 +13,8 @@ public interface SellerRepository extends CrudRepository<Seller, Long> {
 	Seller loadByUsernameAndPassword(String username, String password);
 
 	Seller findByEmail(String email);
+	
+	//Seller findByName(String name);
+
 
 }

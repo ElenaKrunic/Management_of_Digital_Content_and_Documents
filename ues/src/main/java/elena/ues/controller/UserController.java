@@ -1,5 +1,6 @@
 package elena.ues.controller;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,8 @@ import elena.ues.model.StringResponse;
 import elena.ues.model.User;
 import elena.ues.repository.UserRepository;
 import elena.ues.security.util.JwtUtil;
+import elena.ues.service.BuyerService;
+import elena.ues.service.SellerService;
 import elena.ues.service.UserService;
 
 @RestController
@@ -35,6 +39,12 @@ public class UserController {
 	
 	@Autowired 
 	private UserService userService; 
+	
+	@Autowired 
+	private BuyerService buyerService; 
+	
+	@Autowired 
+	private SellerService sellerService; 
 	
 	@PostMapping("/login")
 	public ResponseEntity<String> login(@RequestBody LoginRequest login) {
@@ -62,7 +72,6 @@ public class UserController {
 		return userRepository.findAll();
 	}
 	
-	//registruj prodvca 
 	@PostMapping("/registerSeller")
 	public ResponseEntity<?> registerSeller(@RequestBody SellerRequest sellerRequest) {
 		try {
@@ -84,4 +93,44 @@ public class UserController {
             return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+    @PutMapping("/changeBuyerPassword")
+    public ResponseEntity<StringResponse> changeBuyerPassword(@RequestBody BuyerRequest dto, Principal principal) {
+        try {
+        	buyerService.changePassword(dto, "selenatutic@gmail.com");
+            return new ResponseEntity<>(new StringResponse("Successful!"), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @PutMapping("/changeSellerPassword")
+    public ResponseEntity<StringResponse> changeSellerPassword(@RequestBody SellerRequest dto, Principal principal) {
+        try {
+            sellerService.changePassword(dto, "elenakrunic@gmail.com");
+            return new ResponseEntity<>(new StringResponse("Successful!"), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @GetMapping("/myBuyerProfile")
+    public ResponseEntity<?> getMyBuyerProfile(Principal principal) {
+        try {
+            BuyerRequest buyer = buyerService.getMyBuyerProfile("selenatutic@gmail.com");
+            return new ResponseEntity<>(buyer, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @GetMapping("/mySellerProfile") 
+    public ResponseEntity<?> getMySellerProfile(Principal principal) {
+        try {
+            SellerRequest seller = sellerService.getMySellerProfile("elenakrunic@gmail.com");
+            return new ResponseEntity<>(seller, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

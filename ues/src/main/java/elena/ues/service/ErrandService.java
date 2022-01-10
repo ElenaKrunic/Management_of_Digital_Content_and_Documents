@@ -95,7 +95,6 @@ public class ErrandService {
 	}
 
 	public List<ErrandResponse> getAllGteErrands(int grade) {
-		System.out.println(">>>> pogodojeno <<<< ");
 		final SearchRequest request = SearchUtil.buildGteErrandsSearchRequest("porudzbine", "grade", grade);
 		return searchInternal(request);
 	}

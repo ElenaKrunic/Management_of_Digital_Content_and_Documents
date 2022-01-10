@@ -1,5 +1,6 @@
 package elena.ues.service;
 
+import java.security.Principal;
 import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,5 +88,4 @@ public class UserService {
 		return "Kupac registrovan";
 		
 	}
-
 }
