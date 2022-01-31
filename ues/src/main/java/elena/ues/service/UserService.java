@@ -1,7 +1,9 @@
 package elena.ues.service;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,9 +15,11 @@ import com.google.common.base.Optional;
 import elena.ues.model.Buyer;
 import elena.ues.model.BuyerRequest;
 import elena.ues.model.CustomPrincipal;
+import elena.ues.model.Role;
 import elena.ues.model.Seller;
 import elena.ues.model.SellerRequest;
 import elena.ues.model.User;
+import elena.ues.model.UserResponse;
 import elena.ues.repository.BuyerRepository;
 import elena.ues.repository.RoleRepository;
 import elena.ues.repository.SellerRepository;
@@ -87,5 +91,41 @@ public class UserService {
 		
 		return "Kupac registrovan";
 		
+	}
+
+	public List<UserResponse> getAll() {
+		Iterable<User> users = userRepository.findAll();
+		List<UserResponse> response = new ArrayList<>();
+		for(User user:users){
+			UserResponse tmp = new UserResponse();
+			tmp.setId(user.getId());
+			//tmp.setEmail(user.getEmail());
+			tmp.setFirstname(user.getFirstname());
+			//tmp.setIdentifier(user.getIdentifier());
+			tmp.setPassword(user.getPassword());
+			tmp.setLastname(user.getLastname());
+			//tmp.setPhone(user.getPhoneNumber());
+			//tmp.setValidate(user.getValidated());
+			//tmp.setAddress(user.getAddress());
+			
+			List<String> roles = new ArrayList<>();
+			for(Role role:user.getRoles()){
+				roles.add(role.getName());
+			}
+			tmp.setRoles(roles);
+			response.add(tmp);
+		}
+		return response;
+	}
+
+	public String validate(Long id) throws Exception {
+		java.util.Optional<User> userOptional = userRepository.findById(id).or(null);
+		if(!userOptional.isPresent()) {
+			throw new Exception("This user doesn't exists");
+		}
+		User user = userOptional.get();
+		user.setBlocked(true);
+		userRepository.save(user);
+		return "Uspjesno blokiran korisnik";
 	}
 }

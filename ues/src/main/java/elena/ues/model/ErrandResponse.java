@@ -46,6 +46,18 @@ public class ErrandResponse {
 		this.anonymousComment = errand.isAnonymousComment();	
 		this.archivedComment = errand.isArchivedComment();
 	}
+
+	@Override
+	public String toString() {
+		return "ErrandResponse [id=" + id + ", orderedAtDate=" + orderedAtDate + ", isDelivered=" + isDelivered
+				+ ", grade=" + grade + ", comment=" + comment + ", anonymousComment=" + anonymousComment
+				+ ", archivedComment=" + archivedComment + "]";
+	}
+	
+	public ErrandResponse(Long id) {
+		this.id = id;
+	}
+	
 	
 
 }

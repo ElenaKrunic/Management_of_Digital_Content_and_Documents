@@ -13,4 +13,6 @@ public interface ErrandModelRepository extends CrudRepository<ErrandModel, Long>
 
 	List<ErrandModel> findAllByBuyer(Buyer buyer);
 
+	ErrandModel getById(Long id);
+
 }

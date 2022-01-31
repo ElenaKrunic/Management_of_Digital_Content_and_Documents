@@ -20,6 +20,7 @@ import elena.ues.model.ErrandModel;
 import elena.ues.model.ErrandResponse;
 import elena.ues.model.ItemModel;
 import elena.ues.model.ItemResponse;
+import elena.ues.model.OrderDTO;
 import elena.ues.model.Seller;
 import elena.ues.repository.ArticleModelRepository;
 import elena.ues.repository.BuyerRepository;
@@ -59,34 +60,7 @@ public class ArticleService {
     private static final com.fasterxml.jackson.databind.ObjectMapper MAPPER = new ObjectMapper();
 
 
-	public String orderArticle(ArticleResponse articleResponse, ErrandResponse errandResponse, ItemResponse itemResponse, String address) {
-		
-		Buyer buyer = buyerRepository.findByAddress(address);
-		Seller seller = sellerRepository.findById(articleResponse.getSellerID()).orElseThrow();
-		
-		ArticleModel article = new ArticleModel();
-		article.setDescription(articleResponse.getDescription());
-		article.setName(articleResponse.getName());
-		article.setPath(articleResponse.getPath());
-		article.setPrice(articleResponse.getPrice());
-		article.setSeller(seller);
-		
-		ErrandModel errand = new ErrandModel(); 
-		errand.setBuyer(buyer);
-		errand.setDelivered(true);
-		errand.setOrderedAtDate(errandResponse.getOrderedAtDate());
-		
-		ItemModel item = new ItemModel();
-		item.setArticle(article);
-		item.setErrand(errand);
-		item.setQuantity(itemResponse.getQuantity());
-		
-		article = articleModelRepository.save(article);
-		errand = errandModelRepository.save(errand);
-		item = itemModelRepository.save(item);
-		
-		return "You successfully ordered an article! ";
-	}
+	
 	
 
 
@@ -133,4 +107,74 @@ public class ArticleService {
 		final SearchRequest request = SearchUtil.buildLtSearchRequest("artikli", "price", price);
 		return searchInternal(request);
 	}
+
+
+		public String orderArticle(ArticleResponse articleResponse, ErrandResponse errandResponse, ItemResponse itemResponse, String address) {
+		
+		Buyer buyer = buyerRepository.findByAddress(address);
+		Seller seller = sellerRepository.findById(articleResponse.getSellerID()).orElseThrow();
+		
+		ArticleModel article = new ArticleModel();
+		article.setDescription(articleResponse.getDescription());
+		article.setName(articleResponse.getName());
+		article.setPath(articleResponse.getPath());
+		article.setPrice(articleResponse.getPrice());
+		article.setSeller(seller);
+		
+		ErrandModel errand = new ErrandModel(); 
+		errand.setBuyer(buyer);
+		errand.setDelivered(true);
+		errand.setOrderedAtDate(errandResponse.getOrderedAtDate());
+		
+		ItemModel item = new ItemModel();
+		item.setArticle(article);
+		item.setErrand(errand);
+		item.setQuantity(itemResponse.getQuantity());
+		
+		article = articleModelRepository.save(article);
+		errand = errandModelRepository.save(errand);
+		item = itemModelRepository.save(item);
+		
+		return "You successfully ordered an article! ";
+	}
+
+
+		public String orderOneArticle(OrderDTO orderDTO, String address) {		
+		ArticleModel article = articleModelRepository.getById(orderDTO.getArticleFromDB().getId());
+		System.out.println(">>> id proizvoda je >>>" + article.getId());
+		
+		ErrandModel errand = new ErrandModel(); 
+		errand.setAnonymousComment(false);
+		errand.setArchivedComment(false);
+		errand.setBuyer(null);
+		errand.setComment(null);
+		errand.setDelivered(false);
+		errand.setGrade(0);
+		errand.setId(null);
+		errand.setOrderedAtDate(null);
+		
+		ItemModel item = new ItemModel(); 
+		item.setArticle(article);
+		item.setErrand(errand);
+		item.setQuantity(orderDTO.getQuantity());
+		
+		article = articleModelRepository.save(article);
+		errand = errandModelRepository.save(errand);
+		item = itemModelRepository.save(item);
+		return "You successfully ordered an article! ";
+				
+	}
+
+		/*
+	public String orderOneArticle(ArticleResponse articleResponse, String address) {
+		Buyer buyer = buyerRepository.findByAddress(address);
+		
+		ArticleModel article = new ArticleModel();
+		article.setDescription(articleResponse.getDescription());
+		article.setName(articleResponse.getName());
+		article.setPath(articleResponse.getPath());
+		article.setPrice(articleResponse.getPrice());
+		return null;
+	}
+	*/
 }

@@ -21,6 +21,7 @@ import elena.ues.model.LoginRequest;
 import elena.ues.model.SellerRequest;
 import elena.ues.model.StringResponse;
 import elena.ues.model.User;
+import elena.ues.model.UserResponse;
 import elena.ues.repository.UserRepository;
 import elena.ues.security.util.JwtUtil;
 import elena.ues.service.BuyerService;
@@ -133,4 +134,22 @@ public class UserController {
             return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+    
+    @GetMapping("/getUsers")
+    public List<UserResponse> getAllUsers() {
+    	List<UserResponse> users = userService.getAll(); 
+    	return users; 
+    }
+    
+    //ban
+    @PutMapping("/validate/{id}")
+    public ResponseEntity<?> ban(@PathVariable("id") Long id) {
+        try {
+            String mess = userService.validate(id);
+            return new ResponseEntity<>(new StringResponse(mess), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+    
 }

@@ -12,7 +12,14 @@ import lombok.NoArgsConstructor;
 public class ItemResponse {
 	
 	private Long id; 
-	private int quantity; 
+	private int quantity;
+	
+	@Override
+	public String toString() {
+		return "ItemResponse [id=" + id + ", quantity=" + quantity + "]";
+	} 
+	
+	
 	
 
 }

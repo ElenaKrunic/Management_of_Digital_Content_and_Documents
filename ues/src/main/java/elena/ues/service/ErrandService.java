@@ -13,13 +13,18 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import elena.ues.model.ArticleModel;
 import elena.ues.model.ArticleResponse;
 import elena.ues.model.Buyer;
 import elena.ues.model.ErrandModel;
+import elena.ues.model.ErrandRequest;
 import elena.ues.model.ErrandResponse;
+import elena.ues.model.ItemModel;
 import elena.ues.model.User;
+import elena.ues.repository.ArticleModelRepository;
 import elena.ues.repository.BuyerRepository;
 import elena.ues.repository.ErrandModelRepository;
+import elena.ues.repository.ItemModelRepository;
 import elena.ues.repository.UserRepository;
 import elena.ues.service.search.SearchUtil;
 
@@ -33,12 +38,15 @@ public class ErrandService {
 	private ErrandModelRepository errandModelRepository;
 
 	@Autowired 
-	private UserRepository userRepository;
+	private BuyerRepository buyerRepository; 
+	
+	@Autowired 
+	private ItemModelRepository itemModelRepository; 
+	
+	@Autowired 
+	private ArticleModelRepository articleModelRepository; 
 	
     private static final com.fasterxml.jackson.databind.ObjectMapper MAPPER = new ObjectMapper();
-
-	@Autowired 
-	private BuyerRepository buyerRepository;
 	
 	public List<ErrandResponse> myErrands(String name) {
 		
@@ -112,5 +120,25 @@ public class ErrandService {
 	public List<ErrandResponse> getAllLtErrands(int grade) {
 		final SearchRequest request = SearchUtil.buildLtErrandsSearchRequest("porudzbine", "grade", grade);
 		return searchInternal(request);
+	}
+
+	public String makeAnErrand(ErrandRequest errandRequest) {
+		Buyer buyer = buyerRepository.findById(errandRequest.getBuyerId()).orElseThrow();
+		
+		ErrandModel errand = new ErrandModel();
+		errand.setBuyer(buyer);
+		
+		ArticleModel article = new ArticleModel(); 
+		article.setName(errandRequest.getArticleName());
+		article.setPrice(errandRequest.getPrice());
+		
+		ItemModel item = new ItemModel();
+		item.setQuantity(errandRequest.getQuantity());
+		item.setArticle(article);
+		item.setErrand(errand);
+		
+		errand = errandModelRepository.save(errand);
+		
+		return "Uspjesno napravljena porudzbina";
 	}
 }

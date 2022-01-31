@@ -48,4 +48,8 @@ public class ErrandModel {
 	
 	@ManyToOne
 	private Buyer buyer;
+	
+	public ErrandModel(Long id) {
+		this.id = id;
+	}
 }

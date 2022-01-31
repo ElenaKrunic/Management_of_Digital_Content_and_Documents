@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,13 +21,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
+import com.google.common.net.HttpHeaders;
+import com.itextpdf.html2pdf.ConverterProperties;
+import com.itextpdf.html2pdf.HtmlConverter;
+import com.itextpdf.io.source.ByteArrayOutputStream;
+
+import elena.ues.model.Article;
 import elena.ues.model.ArticleModel;
 import elena.ues.model.ArticleResponse;
 import elena.ues.model.ErrandResponse;
 import elena.ues.model.ItemResponse;
+import elena.ues.model.OrderDTO;
 import elena.ues.model.Seller;
 import elena.ues.model.StringResponse;
 import elena.ues.model.User;
@@ -56,6 +68,10 @@ public class ArticleController {
 	@Autowired 
 	private ArticleService articleService; 
 	
+	@Autowired
+	private ArticleRepository articleRepository;
+	
+		
 	public ArticleController(TemplateEngine templateEngine) {
 		this.templateEngine = templateEngine;
 	}
@@ -138,17 +154,94 @@ public class ArticleController {
 		return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
 	}
 	
-	
-	@PostMapping("/orderArticle")
-	public ResponseEntity<?> order(@RequestBody ArticleResponse articleResponse, 
+	/*
+	@RequestMapping(method = RequestMethod.POST , consumes="application/json",value="/orderArticle")
+	public ResponseEntity<StringResponse> order(@RequestBody ArticleResponse articleResponse, 
 			@RequestBody ErrandResponse errandResponse, 
 			@RequestBody ItemResponse itemResponse, Principal principal) {
 		try {
 			String message = articleService.orderArticle(articleResponse, errandResponse, itemResponse, "elenakrunic@gmail.com");
+			System.out.println(">>> article >>>" + articleResponse.toString());
+			System.out.println(">>> errand >>>" + errandResponse.toString());
+			System.out.println(">>> item >>>" + itemResponse.toString());
+
 			return new ResponseEntity<> (new StringResponse(message), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<> (new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 	}
+	*/
+	
+	@RequestMapping(path="/pdf/{id}")
+	public ResponseEntity<?> getPdfForArticle(@PathVariable("id") Long id, HttpServletRequest req, HttpServletResponse res) {
+		ArticleModel article = articleModelRepository.getById(id);
+		
+		System.out.println(">>>> id artikla je >>>> " + article.getId());
+		WebContext context = new WebContext(req,res, servletContext); 
+		
+		context.setVariable("articleEntry", article);
+		String articleHTML = templateEngine.process("article", context);
+		
+		ByteArrayOutputStream target = new ByteArrayOutputStream();
+		ConverterProperties converterProperties = new ConverterProperties(); 
+		converterProperties.setBaseUri("http://localhost:8085");
+		
+		
+		HtmlConverter.convertToPdf(articleHTML, target, converterProperties);
+		byte[] bytes = target.toByteArray();
+		
+		//ispisati syso da vidis da li pogadja dobar url
+		System.out.println(">>> bytes su >>> " + bytes.toString());
+				
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=article.pdf")
+				.contentType(MediaType.APPLICATION_PDF)
+				.body(bytes);
+		/*
+		return ResponseEntity.ok().header("attachment; filename=article.pdf")
+				.contentType(MediaType.APPLICATION_PDF)
+				.body(bytes);
+				*/
+	}
+	
+	
+	/*
+	@RequestMapping(path="/pdf/{id}") 
+	public ResponseEntity<?> getPDF(@PathVariable("id") Long id, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		Product product = productRepository.getById(id);
+		
+		WebContext context = new WebContext(request,response, servletContext); 
+		context.setVariable("productEntry", product);
+		String productHTML = templateEngine.process("product", context);
+		
+		 ByteArrayOutputStream target = new ByteArrayOutputStream();
+	     ConverterProperties converterProperties = new ConverterProperties();
+	     converterProperties.setBaseUri("http://localhost:8080");
+	     
+	     HtmlConverter.convertToPdf(productHTML, target, converterProperties);
+	     
+	     byte[] bytes = target.toByteArray();
+	     
+	     return ResponseEntity.ok()
+	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=product.pdf")
+	                .contentType(MediaType.APPLICATION_PDF)
+	                .body(bytes);
+	}
+	*/
+	
+	@RequestMapping(method = RequestMethod.POST , consumes="application/json",value="/orderArticle")
+	public ResponseEntity<StringResponse> orderArticle(@RequestBody OrderDTO orderDTO,  
+			 Principal principal) {
+		try {
+			String message = articleService.orderOneArticle(orderDTO, "elenakrunic@gmail.com");
+			System.out.println(">>> order >>>" + orderDTO.toString());
+			
+			return new ResponseEntity<> (new StringResponse(message), HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<> (new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 }

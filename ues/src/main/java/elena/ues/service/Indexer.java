@@ -2,7 +2,9 @@ package elena.ues.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
@@ -14,6 +16,7 @@ import io.searchbox.indices.Analyze;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.elasticsearch.index.IndexSettings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.annotations.Setting;
 import org.springframework.stereotype.Service;
 
 import elena.ues.handler.Handler;
@@ -31,6 +34,7 @@ public class Indexer {
 	
 	 private Indexer() {
 	        JestClientFactory factory = new JestClientFactory();
+	      
 	        factory.setHttpClientConfig(
 	                new HttpClientConfig.Builder("http://localhost:9200")
 	                        .multiThreaded(true)
@@ -68,6 +72,7 @@ public class Indexer {
 	        }
 	    }
 
+	  
 	  public boolean update(Article article) {
 		  article = articleRepository.save(article); 
 		  
@@ -77,7 +82,7 @@ public class Indexer {
 			  return false; 
 		  }
 	  }
-	  
+	
 	  public boolean add(Article article) {
 		  article = articleRepository.indexArticle(article);
 		  
@@ -88,6 +93,7 @@ public class Indexer {
 			  return false;
 		  }
 	  }
+	 
 
 	  public int index(File file) {
 	        Handler handler = new Handler();
@@ -118,6 +124,7 @@ public class Indexer {
 	        }
 	        return retVal;
 	    }
+	       
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,11 +132,11 @@ public class Indexer {
 	  public int indexArticle(List<ArticleResponse> articles) throws IOException {
 		  JestResult result = null;
 		  int retVal = 0; 
-	
+		  
 		  for(ArticleResponse article : articles) {
 	            Index index = new Index.Builder(article).index("artikli").type("artikal").id(article.getId().toString()).build();
-	             
 	            result = jestClient.execute(index);
+	            
 		  }
 		  
 		  if(result.isSucceeded()) {
@@ -139,6 +146,8 @@ public class Indexer {
 		  }
 	  }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public int indexErrand(List<ErrandResponse> errands) throws IOException {
 		JestResult result = null; 
 		int retVal = 0; 
@@ -146,6 +155,7 @@ public class Indexer {
 		for(ErrandResponse errand : errands) {
 			Index index = new Index.Builder(errand).index("porudzbine").type("porudzbina").id(errand.getId().toString()).build();
 			result = jestClient.execute(index);
+			
 		}
 		
 		  if(result.isSucceeded()) {
@@ -154,4 +164,6 @@ public class Indexer {
 			  return -1; 
 		  }
 	}
+	
+	
 }

@@ -12,12 +12,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.annotations.Setting;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,7 +55,7 @@ public class IndexerController {
     
     @Autowired 
     private BuyerService buyerService;
-	
+    
 	   private File getResourceFilePath(String path) {
 	        URL url = this.getClass().getClassLoader().getResource(path);
 	        //System.out.println(">>>>> path >>>>>" + path);
@@ -120,6 +122,7 @@ public class IndexerController {
 	        return new ResponseEntity<String>("Successfully uploaded!", HttpStatus.OK);
 	    }
 	    
+	    
 	    @GetMapping
 		   public List<ArticleResponse> getAllArticles() {
 
@@ -134,7 +137,8 @@ public class IndexerController {
 			   
 			   return articleResponses;
 		   }
-		   
+		
+	    
 		   @DeleteMapping("/{name}")
 		    public void delete(@PathVariable String name) {
 		        indexer.delete(name);
@@ -178,16 +182,10 @@ public class IndexerController {
 			            + (end - start) + " milliseconds";
 			        return new ResponseEntity<String>(text, HttpStatus.OK);
 			    }
+			      
 			     
-		    @GetMapping("/reindexArticles/seller/{id}")
-		    public ResponseEntity<String> indexArticles(@PathVariable("id") Long id) throws IOException {
-		    	long start = new Date().getTime(); 
-		    	//int numIndexed = indexer.indexArticle(articleRepository.getBySeller(id));
-		    	int numIndexed = indexer.indexArticle(sellerService.findArticlesForSeller(id));
-		    	long end = new Date().getTime(); 
-		    	String text = "indexing " + numIndexed + " objects took" + (end - start) + " miliseconds";
-		    	return new ResponseEntity<String>(text, HttpStatus.OK);
-		    }
+			//kako postaviti da se indeksirani fajlovi izgenerisu u files folder? 
+		  
 		    
 		    @GetMapping("/reindexArticlesElena/seller/{id}")
 		    public ResponseEntity<ArticleResponse> indexArticlesElena(@PathVariable("id") Long id) throws IOException {
@@ -208,4 +206,7 @@ public class IndexerController {
 		    	String text = "Indexing " + numIndexed + " objects took " + (end - start) + " miliseconds"; 
 		    	return new ResponseEntity<String>(text, HttpStatus.OK);
 		    }
+		    
+		    
+		
 }

@@ -115,13 +115,19 @@ public class ResultRetriever {
         highlightBuilder.fragmentSize(200);
         searchSourceBuilder.highlighter(highlightBuilder);
                 
-        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex("artikli").addType("artikal").build();       
+        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex("artikli").addType("artikal").build();  
+        System.out.println(">>> indeks je >>>" + search.getIndex());
+        System.out.println(">>> path to result >>> " + search.getPathToResult());
+        System.out.println(">>> rest method name je >>>" + search.getRestMethodName());
+        
         SearchResult result; 
    
         try {
         	result = client.execute(search); 
         	 List<SearchResult.Hit<ArticleResponse, Void>> hits = result.getHits(ArticleResponse.class);        	  
         	 ArticleResponse rd = new ArticleResponse();
+        	 
+        	 System.out.println();
 
               for (SearchResult.Hit<ArticleResponse, Void> hit : hits) {
                   for (String hf : hit.highlight.keySet() ) {
@@ -137,6 +143,7 @@ public class ResultRetriever {
                   rd.setDescription(hit.source.getDescription());
                   rd.setPrice(hit.source.getPrice());
                   rd.setId(hit.source.getId());
+                  
                   results.add(rd);
               }
         } catch (Exception e) {

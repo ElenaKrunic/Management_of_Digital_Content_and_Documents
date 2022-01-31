@@ -19,7 +19,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
 	    }
 	  
 	  public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		  System.out.println(">>>>>>>>>>>>>>>>> doslo ovde >>>>>>>>>>>>>>>>>>>>>>");
+		  //System.out.println(">>>>>>>>>>>>>>>>> doslo ovde >>>>>>>>>>>>>>>>>>>>>>");
 		  registry.addResourceHandler("/static/**").addResourceLocations("file:///C:/Users/lenovo/Desktop/UES_Project/projekat/ues/src/main/resources/static/");		  
 	    }
 }

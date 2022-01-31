@@ -19,4 +19,6 @@ public interface ArticleRepository extends ElasticsearchRepository<Article, Stri
 
 	List<ArticleResponse> getBySeller(int id);
 
+	Article getById(Long id);
+
 }

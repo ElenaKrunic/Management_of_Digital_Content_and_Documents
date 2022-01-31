@@ -13,13 +13,17 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.Setting;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Getter
 @Setter
-@Document(indexName = "articles", createIndex = false)
-@Setting(settingPath="es-config/elastic-setting.json")
+@Document(indexName = "artikli", createIndex = false)
+@Setting(settingPath = "esConfig/serbianAnalyzer.json")
+@NoArgsConstructor
 public class Article {
 	
 	@Field(type = FieldType.Keyword)
