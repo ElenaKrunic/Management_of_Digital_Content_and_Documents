@@ -55,6 +55,7 @@ public class User {
 	@OneToMany(mappedBy="seller")
 	private List<ArticleModel> articles; 
 	
+	@JsonIgnore
 	@ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="role_has_user"

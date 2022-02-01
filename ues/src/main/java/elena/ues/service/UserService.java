@@ -119,13 +119,14 @@ public class UserService {
 	}
 
 	public String validate(Long id) throws Exception {
-		java.util.Optional<User> userOptional = userRepository.findById(id).or(null);
-		if(!userOptional.isPresent()) {
-			throw new Exception("This user doesn't exists");
-		}
-		User user = userOptional.get();
-		user.setBlocked(true);
-		userRepository.save(user);
+		//java.util.Optional<User> userOptional = userRepository.findById(id).or(null);
+		User userOptional = userRepository.getUserById(id);
+		//if(!userOptional.isPresent()) {
+			//throw new Exception("This user doesn't exists");
+		//}
+		//User user = userOptional.get();
+		userOptional.setBlocked(true);
+		userRepository.save(userOptional);
 		return "Uspjesno blokiran korisnik";
 	}
 }

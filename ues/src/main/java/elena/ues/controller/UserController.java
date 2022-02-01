@@ -62,12 +62,7 @@ public class UserController {
 	}
 	*/
 	
-	@GetMapping("getUser/{id}")
-	public Optional<User> get(@PathVariable("id") Long id) {
-		return userRepository.findById(id);
-	}
-	
-	
+	//preveliko
 	@GetMapping(value = "/all")
 	public Iterable<User> getUsers() {
 		return userRepository.findAll();
@@ -141,13 +136,20 @@ public class UserController {
     	return users; 
     }
     
+    @GetMapping("getUser/{id}")
+	public User get(@PathVariable("id") Long id) {
+		//return userRepository.findById(id);
+    	return userRepository.getUserById(id);
+	}
+    
     //ban
-    @PutMapping("/validate/{id}")
+    @PutMapping("/ban/{id}")
     public ResponseEntity<?> ban(@PathVariable("id") Long id) {
         try {
             String mess = userService.validate(id);
             return new ResponseEntity<>(new StringResponse(mess), HttpStatus.OK);
         } catch (Exception e) {
+        	e.printStackTrace();
             return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
