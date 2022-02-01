@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -120,8 +121,25 @@ public class ArticleController {
 		article = articleModelRepository.save(article);
 		
 		return new ResponseEntity<ArticleResponse>(new ArticleResponse(article), HttpStatus.CREATED);
-		
 	}
+	
+	/*
+	@RequestMapping(method = RequestMethod.POST , consumes="application/json",value="/orderArticle")
+	public ResponseEntity<StringResponse> orderArticle(@RequestBody OrderDTO orderDTO,  
+			 Principal principal) {
+		try {
+			String message = articleService.orderOneArticle(orderDTO, "elenakrunic@gmail.com");
+			System.out.println(">>> order >>>" + orderDTO.toString());
+			
+			return new ResponseEntity<> (new StringResponse(message), HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<> (new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	*/
+	
 	
 	@PutMapping(value="/updateArticle/{id}")
 	public ResponseEntity<ArticleResponse> updateArticle(@RequestBody ArticleResponse response, @PathVariable("id") Long id) {
@@ -230,18 +248,20 @@ public class ArticleController {
 	}
 	*/
 	
-	@RequestMapping(method = RequestMethod.POST , consumes="application/json",value="/orderArticle")
-	public ResponseEntity<StringResponse> orderArticle(@RequestBody OrderDTO orderDTO,  
-			 Principal principal) {
-		try {
-			String message = articleService.orderOneArticle(orderDTO, "elenakrunic@gmail.com");
-			System.out.println(">>> order >>>" + orderDTO.toString());
-			
-			return new ResponseEntity<> (new StringResponse(message), HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<> (new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+	
+	//druga varijacija orderArticle metode 
+		@RequestMapping(method = RequestMethod.POST ,value="/orderArticle")
+		public ResponseEntity<StringResponse> orderArticle(@RequestParam("id") Long id, @RequestParam("quantity") Integer quantity, Principal principal) {
+			try {
+				String message = articleService.orderSecondArticle(id, quantity, "elenakrunic@gmail.com");
+				System.out.println(">>> id je >>>" + id);
+				System.out.println(">>> quantity je >>> " + quantity);
+				return new ResponseEntity<> (new StringResponse(message), HttpStatus.OK);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new ResponseEntity<> (new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+			}
 		}
-	}
+		
 	
 }

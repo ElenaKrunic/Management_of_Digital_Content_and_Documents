@@ -165,6 +165,32 @@ public class ArticleService {
 				
 	}
 
+		public String orderSecondArticle(Long id, Integer quantity, String string) {
+			
+			ArticleModel article = articleModelRepository.getById(id);
+			//System.out.println(">>> id proizvoda je >>>" + article.getId());
+			
+			ErrandModel errand = new ErrandModel(); 
+			errand.setAnonymousComment(false);
+			errand.setArchivedComment(false);
+			errand.setBuyer(null);
+			errand.setComment(null);
+			errand.setDelivered(false);
+			errand.setGrade(0);
+			errand.setId(null);
+			errand.setOrderedAtDate(null);
+			
+			ItemModel item = new ItemModel(); 
+			item.setArticle(article);
+			item.setErrand(errand);
+			item.setQuantity(quantity);
+			
+			article = articleModelRepository.save(article);
+			errand = errandModelRepository.save(errand);
+			item = itemModelRepository.save(item);
+			return "You successfully ordered an article! ";
+		}
+
 		/*
 	public String orderOneArticle(ArticleResponse articleResponse, String address) {
 		Buyer buyer = buyerRepository.findByAddress(address);
