@@ -100,9 +100,7 @@ public class ArticleController {
 		if(article == null) {
 			return new ResponseEntity<ArticleResponse>(HttpStatus.NOT_FOUND);
 		}
-		
-		//System.out.println(">>> article je >>> " + article.getName());
-		
+				
 		return new ResponseEntity<ArticleResponse>(new ArticleResponse(article), HttpStatus.OK);
 	}
 	

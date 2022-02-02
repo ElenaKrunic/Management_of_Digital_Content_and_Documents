@@ -49,11 +49,31 @@ public class ErrandService {
     private static final com.fasterxml.jackson.databind.ObjectMapper MAPPER = new ObjectMapper();
 	
 	public List<ErrandResponse> myErrands(String name) {
-		
-		//User user = userRepository.findByUsername(name).orNull();
 		Buyer buyer = buyerRepository.findByEmail(name);
+				
+		if(buyer == null) {
+			return null;
+		}
 		
-		//System.out.println("buyer je " + buyer.getEmail());
+		List<ErrandResponse> response = new ArrayList<>();
+		List<ErrandModel> errands = errandModelRepository.findAllByBuyer(buyer);
+		
+		for(ErrandModel errand : errands) {
+			ErrandResponse tmp = new ErrandResponse();
+			tmp.setId(errand.getId());
+			tmp.setOrderedAtDate(errand.getOrderedAtDate());
+			tmp.setAnonymousComment(errand.isAnonymousComment());
+			tmp.setArchivedComment(errand.isArchivedComment());
+			tmp.setComment(errand.getComment());
+			tmp.setGrade(errand.getGrade());
+			
+			response.add(tmp);
+		}
+		return response;
+	}
+	
+	public List<ErrandResponse> myErr(Long id) {
+		Buyer buyer = buyerRepository.findById(id).orElseThrow();
 		
 		if(buyer == null) {
 			return null;
@@ -69,14 +89,13 @@ public class ErrandService {
 			tmp.setAnonymousComment(errand.isAnonymousComment());
 			tmp.setArchivedComment(errand.isArchivedComment());
 			tmp.setComment(errand.getComment());
-			//tmp.setDelivered(errand.isDelivered());
 			tmp.setGrade(errand.getGrade());
+			tmp.setDelivered(errand.isDelivered());
 			
 			response.add(tmp);
-			//System.out.println(">>> duzina niza je >>> " + response.size());
 		}
-		
 		return response;
+		
 	}
 	
 	private List<ErrandResponse> searchInternal(final SearchRequest request) {
@@ -141,4 +160,31 @@ public class ErrandService {
 		
 		return "Uspjesno napravljena porudzbina";
 	}
+	
+	//samo nedostavljene porudzbine 
+	public List<ErrandResponse> getNonDelivered(boolean isDelivered) {
+		
+		List<ErrandResponse> response = new ArrayList<>();
+		//List<ErrandModel> errands = errandModelRepository.findAllByBuyer(buyer);
+		List<ErrandModel> errands = errandModelRepository.findAllByIsDelivered(isDelivered);
+		
+		for(ErrandModel errand : errands) {
+			
+				ErrandResponse tmp = new ErrandResponse();
+				tmp.setId(errand.getId());
+				tmp.setOrderedAtDate(errand.getOrderedAtDate());
+				tmp.setAnonymousComment(errand.isAnonymousComment());
+				tmp.setArchivedComment(errand.isArchivedComment());
+				tmp.setComment(errand.getComment());
+				tmp.setGrade(errand.getGrade());
+				tmp.setDelivered(errand.isDelivered());
+				
+				response.add(tmp);
+			
+		}
+		return response;
+		
+	}
+
+
 }

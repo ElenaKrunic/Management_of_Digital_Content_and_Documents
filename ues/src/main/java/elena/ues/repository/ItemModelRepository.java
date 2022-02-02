@@ -6,4 +6,6 @@ import elena.ues.model.ItemModel;
 
 public interface ItemModelRepository extends CrudRepository<ItemModel, Long> {
 
+	ItemModel getById(Long id);
+
 }

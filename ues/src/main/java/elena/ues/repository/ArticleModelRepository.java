@@ -15,6 +15,4 @@ public interface ArticleModelRepository extends CrudRepository<ArticleModel, Lon
 
 	ArticleModel getById(Long id);
 
-
-
 }

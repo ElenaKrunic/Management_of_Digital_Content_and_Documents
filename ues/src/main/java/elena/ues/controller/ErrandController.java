@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import elena.ues.model.ArticleModel;
 import elena.ues.model.ArticleResponse;
 import elena.ues.model.ErrandModel;
 import elena.ues.model.ErrandRequest;
@@ -56,6 +57,7 @@ public class ErrandController {
 		}
 	}
 	
+	
 	@PostMapping("/makeAnErrand")
 	public ResponseEntity<?> order(@RequestBody ErrandRequest errandRequest) {
 		try {
@@ -66,4 +68,20 @@ public class ErrandController {
 			return new ResponseEntity<> (new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@GetMapping("/nonDelivered/{true}")
+	public ResponseEntity<?> getNonDelivered(boolean isDelivered) {
+		try {
+			List<ErrandResponse> myErr = errandService.getNonDelivered(isDelivered);
+			
+			return new ResponseEntity<>(myErr, HttpStatus.OK);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
+	
+	
 }

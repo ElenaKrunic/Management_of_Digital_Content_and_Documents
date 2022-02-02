@@ -15,4 +15,6 @@ public interface ErrandModelRepository extends CrudRepository<ErrandModel, Long>
 
 	ErrandModel getById(Long id);
 
+	List<ErrandModel> findAllByIsDelivered(boolean isDelivered);
+
 }

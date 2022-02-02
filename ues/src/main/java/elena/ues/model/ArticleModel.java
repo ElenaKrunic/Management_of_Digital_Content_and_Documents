@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,9 +45,11 @@ public class ArticleModel {
     @Column(name = "path", nullable = true)
    	private String path; 
     
+    @JsonIgnore
     @OneToMany(mappedBy="article")
     private List<ItemModel> items;
    
+    @JsonIgnore
     @ManyToOne
     private Seller seller;
     

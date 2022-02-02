@@ -59,11 +59,6 @@ public class ArticleService {
 	
     private static final com.fasterxml.jackson.databind.ObjectMapper MAPPER = new ObjectMapper();
 
-
-	
-	
-
-
 	private List<ArticleResponse> searchInternal(final SearchRequest request) {
 		if (request == null) {
 			return null; 
@@ -204,3 +199,4 @@ public class ArticleService {
 	}
 	*/
 }
+ 
