@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -69,6 +70,7 @@ public class ErrandController {
 		}
 	}
 	
+	//korisnik pregleda sve nedostavljene porudzbine 
 	@GetMapping("/nonDelivered/{true}")
 	public ResponseEntity<?> getNonDelivered(boolean isDelivered) {
 		try {
@@ -80,6 +82,20 @@ public class ErrandController {
 			return null;
 		}
 	}
+	
+	//korisnik mijenja status porudzbine u dostavljenu 
+	@PutMapping("/changeStatus/{id}")
+	public ResponseEntity<?> changeDeliveryStatus(@PathVariable("id") Long id) {
+		try {
+			String mess = errandService.changeDeliveryStatus(id);
+			return new ResponseEntity<>(new StringResponse(mess), HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
 	
 	
 	

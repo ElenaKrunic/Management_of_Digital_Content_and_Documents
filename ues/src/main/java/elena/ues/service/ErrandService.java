@@ -161,11 +161,9 @@ public class ErrandService {
 		return "Uspjesno napravljena porudzbina";
 	}
 	
-	//samo nedostavljene porudzbine 
 	public List<ErrandResponse> getNonDelivered(boolean isDelivered) {
 		
 		List<ErrandResponse> response = new ArrayList<>();
-		//List<ErrandModel> errands = errandModelRepository.findAllByBuyer(buyer);
 		List<ErrandModel> errands = errandModelRepository.findAllByIsDelivered(isDelivered);
 		
 		for(ErrandModel errand : errands) {
@@ -184,6 +182,18 @@ public class ErrandService {
 		}
 		return response;
 		
+	}
+
+	public String changeDeliveryStatus(Long id) {
+		ErrandModel errand = errandModelRepository.getById(id); 
+		
+		if(errand == null) {
+			return null;
+		}
+		errand.setDelivered(true);
+		errandModelRepository.save(errand); 
+		
+		return "Uspjesno izmijenjen status narudzbe";
 	}
 
 
