@@ -95,9 +95,29 @@ public class ErrandController {
 		}
 	}
 	
+	//korisnik mora da da komentar i ocijeni porudzbinu 
+	@PutMapping("/deliveryComment/{id}")
+	public ResponseEntity<?> deliveryComment(@PathVariable("id") Long id) {
+		try {
+			String mess = errandService.deliveryComment(id); 
+			return new ResponseEntity<>(new StringResponse(mess), HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null; 
+		}
+	}
 	
-	
-	
-	
-	
+	@PutMapping("/commentAndGrade/{id}")
+	public ResponseEntity<ErrandResponse> commentAndGrade(@RequestBody ErrandResponse res, @PathVariable("id") Long id) {
+		ErrandModel errand = errandModelRepository.getById(id); 
+		errand.setAnonymousComment(res.isAnonymousComment());
+		errand.setArchivedComment(res.isArchivedComment());
+		errand.setComment(res.getComment());
+		errand.setGrade(res.getGrade());
+		
+		errand = errandModelRepository.save(errand);
+		
+		return new ResponseEntity<ErrandResponse>(new ErrandResponse(errand), HttpStatus.OK);
+		
+	}
 }

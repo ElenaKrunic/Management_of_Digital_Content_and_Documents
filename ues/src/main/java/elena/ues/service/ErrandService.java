@@ -196,5 +196,17 @@ public class ErrandService {
 		return "Uspjesno izmijenjen status narudzbe";
 	}
 
+	public String deliveryComment(Long id) {
+		ErrandModel errand = errandModelRepository.getById(id); 
+		
+		if(errand == null) {
+			return null;
+		}
+		errand.setDelivered(true);
+		errandModelRepository.save(errand); 
+		
+		return "Uspjesno izmijenjen status narudzbe";
+	}
+
 
 }
