@@ -202,6 +202,7 @@ public class ErrandService {
 		if(errand == null) {
 			return null;
 		}
+		
 		errand.setDelivered(true);
 		errandModelRepository.save(errand); 
 		

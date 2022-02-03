@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import elena.ues.model.ArticleModel;
@@ -107,6 +108,7 @@ public class ErrandController {
 		}
 	}
 	
+	/*
 	@PutMapping("/commentAndGrade/{id}")
 	public ResponseEntity<ErrandResponse> commentAndGrade(@RequestBody ErrandResponse res, @PathVariable("id") Long id) {
 		ErrandModel errand = errandModelRepository.getById(id); 
@@ -114,6 +116,22 @@ public class ErrandController {
 		errand.setArchivedComment(res.isArchivedComment());
 		errand.setComment(res.getComment());
 		errand.setGrade(res.getGrade());
+		
+		errand = errandModelRepository.save(errand);
+		
+		return new ResponseEntity<ErrandResponse>(new ErrandResponse(errand), HttpStatus.OK);
+	}
+	*/
+	
+	@PutMapping("/commentAndGrade")
+	public ResponseEntity<ErrandResponse> commentAndGrade(@RequestParam("id") Long id,
+			@RequestParam("comment") String comment,
+			@RequestParam("grade") int grade) {
+		ErrandModel errand = errandModelRepository.getById(id); 
+		//errand.setAnonymousComment(res.isAnonymousComment());
+		//errand.setArchivedComment(res.isArchivedComment());
+		errand.setComment(comment);
+		errand.setGrade(grade);
 		
 		errand = errandModelRepository.save(errand);
 		
