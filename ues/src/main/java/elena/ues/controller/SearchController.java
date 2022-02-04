@@ -110,6 +110,39 @@ public class SearchController {
 		return new ResponseEntity<List<ArticleResponse>>(result, HttpStatus.OK);
 	}
 	
+	
+	@PostMapping(value="/boolean/articles", consumes="application/json")
+	public ResponseEntity<List<ArticleResponse>> searchArticlesBoolean(@RequestBody AdvancedQuery advancedQuery) throws Exception {
+        QueryBuilder query1 = elena.ues.model.QueryBuilder.buildQuery(SearchType.regular, advancedQuery.getField1(), advancedQuery.getValue1());
+        QueryBuilder query2 = elena.ues.model.QueryBuilder.buildQuery(SearchType.regular, advancedQuery.getField2(), advancedQuery.getValue2());
+
+        //System.out.println(">>> query1.toString >>> " + query1.toString());
+        //System.out.println(">>> query2.toString >>> " + query2.toString());
+
+        BoolQueryBuilder builder = QueryBuilders.boolQuery();
+        if(advancedQuery.getOperation().equalsIgnoreCase("AND")) {
+        	builder.must(query1);
+        	builder.must(query2);
+        	System.out.println(">>> and builder >>>" +  builder.getName());
+        } else if(advancedQuery.getOperation().equalsIgnoreCase("OR")) {
+        	builder.should(query1); 
+        	builder.should(query2);
+        	System.out.println(">>> or builder >>> " + builder.getName());
+        } else if(advancedQuery.getOperation().equalsIgnoreCase("NOT")) {
+        	builder.must(query1); 
+        	builder.mustNot(query2);
+        	System.out.println(">>> not builder >>> " + builder.getName());
+        }
+        
+        List<RequiredHighlight> rh = new ArrayList<>();
+        rh.add(new RequiredHighlight(advancedQuery.getField1(), advancedQuery.getValue1()));
+        rh.add(new RequiredHighlight(advancedQuery.getField2(), advancedQuery.getValue2()));
+        
+        System.out.println(" >>> rh >>> " + rh.toString());
+        List<ArticleResponse> result = resultRetriever.getArticleResults(builder, rh);
+		return new ResponseEntity<List<ArticleResponse>>(result, HttpStatus.OK);
+	}
+	
 	@PostMapping(value="/term/errands")
 	public ResponseEntity <List<ErrandResponse>> searchErrandsTermQuery(@RequestBody SimpleQuery simpleQuery) throws Exception {
 		QueryBuilder queryBuilder = elena.ues.service.search.QueryBuilder.buildQuery(SearchType.regular, simpleQuery.getField(), simpleQuery.getValue());
@@ -179,46 +212,8 @@ public class SearchController {
 	}
 	
 	
-	/*
-	@PostMapping("/advanced")
-	public List<ArticleResultData> advancedArticlesSearch(@RequestParam String name, @RequestParam String description, @RequestParam String operation, @RequestParam SearchType searchType) {
-		List<RequiredHighlight> rh = new ArrayList<RequiredHighlight>(); 
-		BoolQueryBuilder builder = QueryBuilders.boolQuery();
-		
-		  if (!name.equals("".trim())) {
-	            org.elasticsearch.index.query.QueryBuilder queryBuilder = elena.ues.service.search.QueryBuilder.buildQuery(searchType, "name", name.toLowerCase());
-	            if (operation.equals("AND")) {
-	                builder.must(queryBuilder);
-	                System.out.println(">>>>>>>>>>> AND >>>>>>>>>> ");
-	            } else {
-	                builder.should(queryBuilder);
-	                System.out.println(">>>>>>>>>>> OR >>>>>>>>>> ");
-	            }
-	            rh.add(new RequiredHighlight("name", name));
-	        }
-		  
-		  if (!description.equals("".trim())) {
-	            org.elasticsearch.index.query.QueryBuilder queryBuilder = elena.ues.service.search.QueryBuilder.buildQuery(searchType, "description", description.toLowerCase());
-	            if (operation.equals("AND")) {
-	                builder.must(queryBuilder);
-	                System.out.println(">>>>>>>>>>> AND2 >>>>>>>>>> ");
-	            } else {
-	                builder.should(queryBuilder);
-	                System.out.println(">>>>>>>>>>> OR2 >>>>>>>>>> ");
-
-	            }
-	            rh.add(new RequiredHighlight("description", description));
-	        }
-		  
-		    List<ArticleResultData> results = resultRetriever.getResults(builder, rh);
-		    System.out.println(" >>>> rezultat je >>>>" + results.toString());
-
-	        return results;
-	}
-	*/
-	
-	@PostMapping(value="/boolean/articles", consumes="application/json")
-	public ResponseEntity<List<ArticleResponse>> searchArticlesBoolean(@RequestBody AdvancedQuery advancedQuery) throws Exception {
+	@PostMapping(value="/boolean/errands", consumes="application/json")
+	public ResponseEntity<List<ErrandResponse>> searchErrandsBoolean(@RequestBody AdvancedQuery advancedQuery) throws Exception {
         QueryBuilder query1 = elena.ues.model.QueryBuilder.buildQuery(SearchType.regular, advancedQuery.getField1(), advancedQuery.getValue1());
         QueryBuilder query2 = elena.ues.model.QueryBuilder.buildQuery(SearchType.regular, advancedQuery.getField2(), advancedQuery.getValue2());
 
@@ -245,8 +240,9 @@ public class SearchController {
         rh.add(new RequiredHighlight(advancedQuery.getField2(), advancedQuery.getValue2()));
         
         System.out.println(" >>> rh >>> " + rh.toString());
-        List<ArticleResponse> result = resultRetriever.getArticleResults(builder, rh);
-		return new ResponseEntity<List<ArticleResponse>>(result, HttpStatus.OK);
+        List<ErrandResponse> result = resultRetriever.getErrandResults(builder, rh);
+		return new ResponseEntity<List<ErrandResponse>>(result, HttpStatus.OK);
 	}
+
 	
 }
