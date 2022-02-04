@@ -3,6 +3,7 @@ package elena.ues.service.search;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class ResultRetriever {
 
 	
 	// u ovoj metodi pretrazujem indeks article, meni treba pretraga entiteta jer njega i indeksiram 
-	/*
+	
 	public List<ArticleResponse> getResults(org.elasticsearch.index.query.QueryBuilder query,
 			List<RequiredHighlight> requiredHighlights) {
 		if (query == null) {
@@ -73,7 +74,7 @@ public class ResultRetriever {
         
 		return results;
 	}
-	*/
+	
 	
 	
 	/*
@@ -116,9 +117,9 @@ public class ResultRetriever {
         searchSourceBuilder.highlighter(highlightBuilder);
                 
         Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex("artikli").addType("artikal").build();  
-        System.out.println(">>> indeks je >>>" + search.getIndex());
-        System.out.println(">>> path to result >>> " + search.getPathToResult());
-        System.out.println(">>> rest method name je >>>" + search.getRestMethodName());
+        //System.out.println(">>> indeks je >>>" + search.getIndex());
+        //System.out.println(">>> path to result >>> " + search.getPathToResult());
+        //System.out.println(">>> rest method name je >>>" + search.getRestMethodName());
         
         SearchResult result; 
    
@@ -127,7 +128,7 @@ public class ResultRetriever {
         	 List<SearchResult.Hit<ArticleResponse, Void>> hits = result.getHits(ArticleResponse.class);        	  
         	 ArticleResponse rd = new ArticleResponse();
         	 
-        	 System.out.println();
+        	 System.out.println(">>> hits su >>>" + hits.size());
 
               for (SearchResult.Hit<ArticleResponse, Void> hit : hits) {
                   for (String hf : hit.highlight.keySet() ) {
@@ -200,6 +201,11 @@ public class ResultRetriever {
         	e.printStackTrace();
         }
 		return results;
+	}
+
+	public List<ArticleResponse> getBoolArticleResults(BoolQueryBuilder builder, List<RequiredHighlight> rh) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

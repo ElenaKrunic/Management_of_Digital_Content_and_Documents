@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import elena.ues.model.AdvancedQuery;
 import elena.ues.model.ArticleResponse;
 import elena.ues.model.ArticleResultData;
 import elena.ues.model.ErrandResponse;
@@ -177,6 +178,7 @@ public class SearchController {
 		return errandService.getAllLtErrands(grade);
 	}
 	
+	
 	/*
 	@PostMapping("/advanced")
 	public List<ArticleResultData> advancedArticlesSearch(@RequestParam String name, @RequestParam String description, @RequestParam String operation, @RequestParam SearchType searchType) {
@@ -214,4 +216,37 @@ public class SearchController {
 	        return results;
 	}
 	*/
+	
+	@PostMapping(value="/boolean/articles", consumes="application/json")
+	public ResponseEntity<List<ArticleResponse>> searchArticlesBoolean(@RequestBody AdvancedQuery advancedQuery) throws Exception {
+        QueryBuilder query1 = elena.ues.model.QueryBuilder.buildQuery(SearchType.regular, advancedQuery.getField1(), advancedQuery.getValue1());
+        QueryBuilder query2 = elena.ues.model.QueryBuilder.buildQuery(SearchType.regular, advancedQuery.getField2(), advancedQuery.getValue2());
+
+        System.out.println(">>> query1.toString >>> " + query1.toString());
+        System.out.println(">>> query2.toString >>> " + query2.toString());
+
+        BoolQueryBuilder builder = QueryBuilders.boolQuery();
+        if(advancedQuery.getOperation().equalsIgnoreCase("AND")) {
+        	builder.must(query1);
+        	builder.must(query2);
+        	System.out.println(">>> and builder >>>" +  builder.getName());
+        } else if(advancedQuery.getOperation().equalsIgnoreCase("OR")) {
+        	builder.should(query1); 
+        	builder.should(query2);
+        	System.out.println(">>> or builder >>> " + builder.getName());
+        } else if(advancedQuery.getOperation().equalsIgnoreCase("NOT")) {
+        	builder.must(query1); 
+        	builder.mustNot(query2);
+        	System.out.println(">>> not builder >>> " + builder.getName());
+        }
+        
+        List<RequiredHighlight> rh = new ArrayList<>();
+        rh.add(new RequiredHighlight(advancedQuery.getField1(), advancedQuery.getValue1()));
+        rh.add(new RequiredHighlight(advancedQuery.getField2(), advancedQuery.getValue2()));
+        
+        System.out.println(" >>> rh >>> " + rh.toString());
+        List<ArticleResponse> result = resultRetriever.getArticleResults(builder, rh);
+		return new ResponseEntity<List<ArticleResponse>>(result, HttpStatus.OK);
+	}
+	
 }
