@@ -154,9 +154,7 @@ public class IndexerController {
 		        
 		        System.out.println("File je " + file.getOriginalFilename());
 		        
-		        Seller seller = sellerRepository.findByFirstname(firstname);
-		        //System.out.println("Seller je " + seller.getFirstname());
-		        
+		        Seller seller = sellerRepository.findByFirstname(firstname);		        
 		       
 		        String fileName = saveUploadedFile(file);
 		        if (fileName != null) {
@@ -170,7 +168,6 @@ public class IndexerController {
 		        }
 		    }
 		    
-		    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		 
 			@GetMapping("/reindex")
 			    public ResponseEntity<String> index() throws IOException {
@@ -182,10 +179,7 @@ public class IndexerController {
 			            + (end - start) + " milliseconds";
 			        return new ResponseEntity<String>(text, HttpStatus.OK);
 			    }
-			      
-			     
-			//kako postaviti da se indeksirani fajlovi izgenerisu u files folder? 
-		  
+			      		  
 		    
 		    @GetMapping("/reindexArticlesElena/seller/{id}")
 		    public ResponseEntity<ArticleResponse> indexArticlesElena(@PathVariable("id") Long id) throws IOException {
@@ -206,7 +200,4 @@ public class IndexerController {
 		    	String text = "Indexing " + numIndexed + " objects took " + (end - start) + " miliseconds"; 
 		    	return new ResponseEntity<String>(text, HttpStatus.OK);
 		    }
-		    
-		    
-		
 }

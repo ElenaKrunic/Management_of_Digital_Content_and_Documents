@@ -2,6 +2,7 @@ package elena.ues.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -49,7 +50,7 @@ public class ErrandModel {
 	private boolean archivedComment; 
 	
 	@JsonIgnore
-	@ManyToOne
+	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	private Buyer buyer;
 	
 	public ErrandModel(Long id) {

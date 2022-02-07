@@ -17,6 +17,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 	Optional<User> findByUsername(String username);
 	Seller getById(Long id);
 	User getUserById(Long id);
+	User findByUsernameAndPasswordAndBlocked(String username, String password, boolean blocked);
 
 
 

@@ -87,14 +87,11 @@ public class ArticleController {
 			response.add(new ArticleResponse(article));
 		}
 		
-		
-		System.out.println(">>> response je duzine >>> "  + response.size());
 		return new ResponseEntity<List<ArticleResponse>>(response, HttpStatus.OK);
 	}
 	
 	@GetMapping(value="article/{id}")
 	public ResponseEntity<ArticleResponse> getOne(@PathVariable("id") Long id) {
-		//ArticleModel article = articleModelRepository.findById(id).orElseThrow();
 		ArticleModel article = articleModelRepository.getById(id);
 		
 		if(article == null) {
@@ -120,24 +117,6 @@ public class ArticleController {
 		
 		return new ResponseEntity<ArticleResponse>(new ArticleResponse(article), HttpStatus.CREATED);
 	}
-	
-	/*
-	@RequestMapping(method = RequestMethod.POST , consumes="application/json",value="/orderArticle")
-	public ResponseEntity<StringResponse> orderArticle(@RequestBody OrderDTO orderDTO,  
-			 Principal principal) {
-		try {
-			String message = articleService.orderOneArticle(orderDTO, "elenakrunic@gmail.com");
-			System.out.println(">>> order >>>" + orderDTO.toString());
-			
-			return new ResponseEntity<> (new StringResponse(message), HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<> (new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	*/
-	
 	
 	@PutMapping(value="/updateArticle/{id}")
 	public ResponseEntity<ArticleResponse> updateArticle(@RequestBody ArticleResponse response, @PathVariable("id") Long id) {
@@ -170,25 +149,6 @@ public class ArticleController {
 		return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
 	}
 	
-	/*
-	@RequestMapping(method = RequestMethod.POST , consumes="application/json",value="/orderArticle")
-	public ResponseEntity<StringResponse> order(@RequestBody ArticleResponse articleResponse, 
-			@RequestBody ErrandResponse errandResponse, 
-			@RequestBody ItemResponse itemResponse, Principal principal) {
-		try {
-			String message = articleService.orderArticle(articleResponse, errandResponse, itemResponse, "elenakrunic@gmail.com");
-			System.out.println(">>> article >>>" + articleResponse.toString());
-			System.out.println(">>> errand >>>" + errandResponse.toString());
-			System.out.println(">>> item >>>" + itemResponse.toString());
-
-			return new ResponseEntity<> (new StringResponse(message), HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<> (new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
-		}
-	}
-	*/
-	
 	@RequestMapping(path="/pdf/{id}")
 	public ResponseEntity<?> getPdfForArticle(@PathVariable("id") Long id, HttpServletRequest req, HttpServletResponse res) {
 		ArticleModel article = articleModelRepository.getById(id);
@@ -207,47 +167,13 @@ public class ArticleController {
 		HtmlConverter.convertToPdf(articleHTML, target, converterProperties);
 		byte[] bytes = target.toByteArray();
 		
-		//ispisati syso da vidis da li pogadja dobar url
 		System.out.println(">>> bytes su >>> " + bytes.toString());
 				
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=article.pdf")
 				.contentType(MediaType.APPLICATION_PDF)
 				.body(bytes);
-		/*
-		return ResponseEntity.ok().header("attachment; filename=article.pdf")
-				.contentType(MediaType.APPLICATION_PDF)
-				.body(bytes);
-				*/
 	}
 	
-	
-	/*
-	@RequestMapping(path="/pdf/{id}") 
-	public ResponseEntity<?> getPDF(@PathVariable("id") Long id, HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		Product product = productRepository.getById(id);
-		
-		WebContext context = new WebContext(request,response, servletContext); 
-		context.setVariable("productEntry", product);
-		String productHTML = templateEngine.process("product", context);
-		
-		 ByteArrayOutputStream target = new ByteArrayOutputStream();
-	     ConverterProperties converterProperties = new ConverterProperties();
-	     converterProperties.setBaseUri("http://localhost:8080");
-	     
-	     HtmlConverter.convertToPdf(productHTML, target, converterProperties);
-	     
-	     byte[] bytes = target.toByteArray();
-	     
-	     return ResponseEntity.ok()
-	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=product.pdf")
-	                .contentType(MediaType.APPLICATION_PDF)
-	                .body(bytes);
-	}
-	*/
-	
-	
-	//druga varijacija orderArticle metode 
 		@RequestMapping(method = RequestMethod.POST ,value="/orderArticle")
 		public ResponseEntity<StringResponse> orderArticle(@RequestParam("id") Long id, @RequestParam("quantity") Integer quantity, Principal principal) {
 			try {

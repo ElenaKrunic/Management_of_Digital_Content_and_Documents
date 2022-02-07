@@ -20,7 +20,7 @@ public class ErrandResponse {
 	private Long id;
 	
 	@JsonProperty
-	private Date orderedAtDate;
+	private String orderedAtDate;
 	
 	@JsonProperty
 	private boolean isDelivered; 
@@ -39,7 +39,7 @@ public class ErrandResponse {
 	
 	public ErrandResponse(ErrandModel errand) {
 		this.id = errand.getId();
-		this.orderedAtDate = errand.getOrderedAtDate(); 
+		this.orderedAtDate = errand.getOrderedAtDate().toString(); 
 		this.isDelivered = errand.isDelivered();
 		this.grade = errand.getGrade();
 		this.comment = errand.getComment();

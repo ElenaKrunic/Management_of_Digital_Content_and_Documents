@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import elena.ues.model.ArticleModel;
 import elena.ues.model.BuyerRequest;
 import elena.ues.model.LoginRequest;
 import elena.ues.model.SellerRequest;
@@ -48,24 +50,18 @@ public class UserController {
 	private SellerService sellerService; 
 	
 	@PostMapping("/login")
-	public ResponseEntity<String> login(@RequestBody LoginRequest login) {
-		User user = userRepository.findByUsernameAndPassword(login.getUsername(), login.getPassword()); 
-		String jwtToken = jwtUtil.generateToken(user);
-		return new ResponseEntity<String>(jwtToken, HttpStatus.OK);
-	}
+	public ResponseEntity<String> login(@RequestBody LoginRequest login) throws Exception {
+		User user = userService.findByUsernameAndPasswordAndBlocked(login.getUsername(), login.getPassword());
+		
+		if(user.isBlocked() == true) {
+			System.out.println("Nema tokena za blokiranog korisnika");
+		} else {
+			String jwtToken = jwtUtil.generateToken(user);
+			return new ResponseEntity<String>(jwtToken, HttpStatus.OK);	
+		}
+		
+		return null;
 	
-	/*
-	@PostMapping("/loginDva")
-	public ResponseEntity<String> loginDva(@RequestBody LoginRequest login) {
-		User user = userRepository.findByUsernameAndPassword(login.getUsername(), login.getPassword());
-		String jwtToken = jwtUtil.
-	}
-	*/
-	
-	//preveliko
-	@GetMapping(value = "/all")
-	public Iterable<User> getUsers() {
-		return userRepository.findAll();
 	}
 	
 	@PostMapping("/registerSeller")
@@ -93,7 +89,7 @@ public class UserController {
     @PutMapping("/changeBuyerPassword")
     public ResponseEntity<StringResponse> changeBuyerPassword(@RequestBody BuyerRequest dto, Principal principal) {
         try {
-        	buyerService.changePassword(dto, "selenatutic@gmail.com");
+        	buyerService.changePassword(dto, principal.getName());
             return new ResponseEntity<>(new StringResponse("Successful!"), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -103,7 +99,7 @@ public class UserController {
     @PutMapping("/changeSellerPassword")
     public ResponseEntity<StringResponse> changeSellerPassword(@RequestBody SellerRequest dto, Principal principal) {
         try {
-            sellerService.changePassword(dto, "elenakrunic@gmail.com");
+            sellerService.changePassword(dto, principal.getName());
             return new ResponseEntity<>(new StringResponse("Successful!"), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -138,11 +134,9 @@ public class UserController {
     
     @GetMapping("getUser/{id}")
 	public User get(@PathVariable("id") Long id) {
-		//return userRepository.findById(id);
     	return userRepository.getUserById(id);
 	}
     
-    //ban
     @PutMapping("/ban/{id}")
     public ResponseEntity<?> ban(@PathVariable("id") Long id) {
         try {
@@ -154,4 +148,15 @@ public class UserController {
         }
     }
     
+    @DeleteMapping("/deleteUser/{id}")
+	public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) throws Exception {
+		User user = userRepository.findById(id).orElseThrow();
+		
+		if(user != null) {
+			userRepository.deleteById(id);
+			return new ResponseEntity<Void>(HttpStatus.OK);
+		} else {
+			throw new Exception();
+		}
+    }
 }

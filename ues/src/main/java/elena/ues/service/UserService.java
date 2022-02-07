@@ -99,14 +99,9 @@ public class UserService {
 		for(User user:users){
 			UserResponse tmp = new UserResponse();
 			tmp.setId(user.getId());
-			//tmp.setEmail(user.getEmail());
 			tmp.setFirstname(user.getFirstname());
-			//tmp.setIdentifier(user.getIdentifier());
 			tmp.setPassword(user.getPassword());
 			tmp.setLastname(user.getLastname());
-			//tmp.setPhone(user.getPhoneNumber());
-			//tmp.setValidate(user.getValidated());
-			//tmp.setAddress(user.getAddress());
 			
 			List<String> roles = new ArrayList<>();
 			for(Role role:user.getRoles()){
@@ -119,14 +114,25 @@ public class UserService {
 	}
 
 	public String validate(Long id) throws Exception {
-		//java.util.Optional<User> userOptional = userRepository.findById(id).or(null);
 		User userOptional = userRepository.getUserById(id);
-		//if(!userOptional.isPresent()) {
-			//throw new Exception("This user doesn't exists");
-		//}
-		//User user = userOptional.get();
+
 		userOptional.setBlocked(true);
 		userRepository.save(userOptional);
 		return "Uspjesno blokiran korisnik";
 	}
+
+	public User findByUsernameAndPasswordAndBlocked(String username, String password) throws Exception {
+		
+		User user = userRepository.findByUsernameAndPassword(username, password);
+		
+		System.out.println("username and password od objekta user su " + user.getUsername() + " " + user.getPassword() + " " + user.isBlocked());
+		
+		if(user.isBlocked() == true) {
+			System.out.println("user je blocked");
+		} else {
+			//throw new Exception();
+		}
+		
+		return user;
+	} 
 }

@@ -61,7 +61,7 @@ public class ErrandService {
 		for(ErrandModel errand : errands) {
 			ErrandResponse tmp = new ErrandResponse();
 			tmp.setId(errand.getId());
-			tmp.setOrderedAtDate(errand.getOrderedAtDate());
+			tmp.setOrderedAtDate(errand.getOrderedAtDate().toString());
 			tmp.setAnonymousComment(errand.isAnonymousComment());
 			tmp.setArchivedComment(errand.isArchivedComment());
 			tmp.setComment(errand.getComment());
@@ -85,7 +85,7 @@ public class ErrandService {
 		for(ErrandModel errand : errands) {
 			ErrandResponse tmp = new ErrandResponse();
 			tmp.setId(errand.getId());
-			tmp.setOrderedAtDate(errand.getOrderedAtDate());
+			tmp.setOrderedAtDate(errand.getOrderedAtDate().toString());
 			tmp.setAnonymousComment(errand.isAnonymousComment());
 			tmp.setArchivedComment(errand.isArchivedComment());
 			tmp.setComment(errand.getComment());
@@ -170,7 +170,7 @@ public class ErrandService {
 			
 				ErrandResponse tmp = new ErrandResponse();
 				tmp.setId(errand.getId());
-				tmp.setOrderedAtDate(errand.getOrderedAtDate());
+				tmp.setOrderedAtDate(errand.getOrderedAtDate().toString());
 				tmp.setAnonymousComment(errand.isAnonymousComment());
 				tmp.setArchivedComment(errand.isArchivedComment());
 				tmp.setComment(errand.getComment());
@@ -207,6 +207,26 @@ public class ErrandService {
 		errandModelRepository.save(errand); 
 		
 		return "Uspjesno izmijenjen status narudzbe";
+	}
+
+	public List<ErrandResponse> getAll() {
+		Iterable<ErrandModel> errands = errandModelRepository.findAll();
+		List<ErrandResponse> response = new ArrayList<>();
+		
+		for(ErrandModel errand : errands) {
+			ErrandResponse tmp = new ErrandResponse();
+			tmp.setComment(errand.getComment());
+			tmp.setDelivered(errand.isDelivered());
+			tmp.setAnonymousComment(errand.isAnonymousComment());
+			tmp.setArchivedComment(errand.isArchivedComment());
+			tmp.setGrade(errand.getGrade());
+			tmp.setId(errand.getId());
+			tmp.setOrderedAtDate(errand.getOrderedAtDate().toString());
+			
+			response.add(tmp);
+		}
+		
+		return response;
 	}
 
 

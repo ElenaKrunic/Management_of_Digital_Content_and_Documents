@@ -1,6 +1,7 @@
 package elena.ues.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.elasticsearch.action.search.SearchRequest;
@@ -119,7 +120,9 @@ public class ArticleService {
 		ErrandModel errand = new ErrandModel(); 
 		errand.setBuyer(buyer);
 		errand.setDelivered(true);
-		errand.setOrderedAtDate(errandResponse.getOrderedAtDate());
+		Date date = new Date();
+		//errand.setOrderedAtDate(errandResponse.getOrderedAtDate());
+		errand.setOrderedAtDate(date);
 		
 		ItemModel item = new ItemModel();
 		item.setArticle(article);

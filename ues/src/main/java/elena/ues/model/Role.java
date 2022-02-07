@@ -2,6 +2,7 @@ package elena.ues.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,7 +35,7 @@ public class Role implements GrantedAuthority {
 	  @Column(name = "_name", nullable = false)
 	  private String name;
 
-	  @ManyToMany(mappedBy="roles", fetch = FetchType.EAGER)
+	  @ManyToMany(mappedBy="roles", fetch = FetchType.EAGER, cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	  private List<User> users;
 
 	  @Override

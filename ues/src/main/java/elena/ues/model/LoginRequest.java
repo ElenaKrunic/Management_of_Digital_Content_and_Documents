@@ -13,5 +13,6 @@ public class LoginRequest {
 
 	private String username; 
 	private String password;
-	//dodaj rolu 
+	private boolean blocked = false;
+	
 }

@@ -52,11 +52,11 @@ public class User {
 	private boolean blocked; 
 	
 	@JsonIgnore
-	@OneToMany(mappedBy="seller")
+	@OneToMany(mappedBy="seller", cascade={CascadeType.REMOVE})
 	private List<ArticleModel> articles; 
 	
 	@JsonIgnore
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER, cascade={CascadeType.REMOVE})
     @JoinTable(
             name="role_has_user"
             , joinColumns={

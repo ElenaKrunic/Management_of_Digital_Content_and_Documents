@@ -116,9 +116,6 @@ public class SearchController {
         QueryBuilder query1 = elena.ues.model.QueryBuilder.buildQuery(SearchType.regular, advancedQuery.getField1(), advancedQuery.getValue1());
         QueryBuilder query2 = elena.ues.model.QueryBuilder.buildQuery(SearchType.regular, advancedQuery.getField2(), advancedQuery.getValue2());
 
-        //System.out.println(">>> query1.toString >>> " + query1.toString());
-        //System.out.println(">>> query2.toString >>> " + query2.toString());
-
         BoolQueryBuilder builder = QueryBuilders.boolQuery();
         if(advancedQuery.getOperation().equalsIgnoreCase("AND")) {
         	builder.must(query1);

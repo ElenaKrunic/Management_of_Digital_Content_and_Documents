@@ -44,8 +44,13 @@ public class ErrandController {
 			return null;
 		}
 		
-		return new ResponseEntity<ErrandResponse>(new ErrandResponse(errand), HttpStatus.OK);
-		
+		return new ResponseEntity<ErrandResponse>(new ErrandResponse(errand), HttpStatus.OK);	
+	}
+	
+	@GetMapping("/getErrands")
+	public List<ErrandResponse> getAllErrands() {
+		List<ErrandResponse> errands = errandService.getAll();
+		return errands; 
 	}
 	
 	@GetMapping("/myErrands")
@@ -71,7 +76,6 @@ public class ErrandController {
 		}
 	}
 	
-	//korisnik pregleda sve nedostavljene porudzbine 
 	@GetMapping("/nonDelivered/{true}")
 	public ResponseEntity<?> getNonDelivered(boolean isDelivered) {
 		try {
@@ -84,7 +88,6 @@ public class ErrandController {
 		}
 	}
 	
-	//korisnik mijenja status porudzbine u dostavljenu 
 	@PutMapping("/changeStatus/{id}")
 	public ResponseEntity<?> changeDeliveryStatus(@PathVariable("id") Long id) {
 		try {
@@ -96,7 +99,6 @@ public class ErrandController {
 		}
 	}
 	
-	//korisnik mora da da komentar i ocijeni porudzbinu 
 	@PutMapping("/deliveryComment/{id}")
 	public ResponseEntity<?> deliveryComment(@PathVariable("id") Long id) {
 		try {
@@ -108,28 +110,12 @@ public class ErrandController {
 		}
 	}
 	
-	/*
-	@PutMapping("/commentAndGrade/{id}")
-	public ResponseEntity<ErrandResponse> commentAndGrade(@RequestBody ErrandResponse res, @PathVariable("id") Long id) {
-		ErrandModel errand = errandModelRepository.getById(id); 
-		errand.setAnonymousComment(res.isAnonymousComment());
-		errand.setArchivedComment(res.isArchivedComment());
-		errand.setComment(res.getComment());
-		errand.setGrade(res.getGrade());
-		
-		errand = errandModelRepository.save(errand);
-		
-		return new ResponseEntity<ErrandResponse>(new ErrandResponse(errand), HttpStatus.OK);
-	}
-	*/
 	
 	@PutMapping("/commentAndGrade")
 	public ResponseEntity<ErrandResponse> commentAndGrade(@RequestParam("id") Long id,
 			@RequestParam("comment") String comment,
 			@RequestParam("grade") int grade) {
 		ErrandModel errand = errandModelRepository.getById(id); 
-		//errand.setAnonymousComment(res.isAnonymousComment());
-		//errand.setArchivedComment(res.isArchivedComment());
 		errand.setComment(comment);
 		errand.setGrade(grade);
 		
