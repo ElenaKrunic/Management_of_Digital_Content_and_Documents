@@ -7,27 +7,27 @@
           name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
     
-    <title>Basic information about an article </title>
+    <title>Basic information about an errand </title>
 </head>
 <body class="flex items-center justify-center h-screen">
 <div class="rounded-lg border shadow-lg p-10 w-3/5">
     <div class="flex flex-row justify-between pb-4">
         <div>
-            <h2 class="text-xl font-bold">Article number: <span class="text-green-600" th:text="${articleEntry.id}"></span>
+            <h2 class="text-xl font-bold">Errand number: <span class="text-green-600" th:text="${errandEntry.id}"></span>
             </h2>
         </div>
     </div>
     <table class="table-fixed w-full text-right border rounded">
         <thead class="bg-gray-100">
         <tr>
-            <th class="text-left pl-4">Name</th>
-            <th>Description</th>            
+            <th class="text-left pl-4">Ordered at date: </th>
+            <th> Comment: </th>            
         </tr>
         </thead>
         <tbody>
         <tr>
-          <td class="pl-4 text-left" th:text="${articleEntry.name}"></td>
-           <td class="pl-4 text-left" th:text="${articleEntry.description}"></td>
+           <td class="pl-4 text-left" th:text="${errandEntry.orderedAtDate}"></td>
+           <td class="pl-4 text-left" th:text="${errandEntry.comment}"></td>
         </tr>
         </tbody>
     </table>

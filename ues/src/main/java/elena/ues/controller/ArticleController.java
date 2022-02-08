@@ -153,7 +153,6 @@ public class ArticleController {
 	public ResponseEntity<?> getPdfForArticle(@PathVariable("id") Long id, HttpServletRequest req, HttpServletResponse res) {
 		ArticleModel article = articleModelRepository.getById(id);
 		
-		System.out.println(">>>> id artikla je >>>> " + article.getId());
 		WebContext context = new WebContext(req,res, servletContext); 
 		
 		context.setVariable("articleEntry", article);
@@ -163,12 +162,9 @@ public class ArticleController {
 		ConverterProperties converterProperties = new ConverterProperties(); 
 		converterProperties.setBaseUri("http://localhost:8085");
 		
-		
 		HtmlConverter.convertToPdf(articleHTML, target, converterProperties);
 		byte[] bytes = target.toByteArray();
-		
-		System.out.println(">>> bytes su >>> " + bytes.toString());
-				
+						
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=article.pdf")
 				.contentType(MediaType.APPLICATION_PDF)
 				.body(bytes);

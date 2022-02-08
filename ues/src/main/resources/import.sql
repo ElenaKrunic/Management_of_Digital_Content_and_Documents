@@ -18,5 +18,7 @@ insert into article (id, description, name, path, price, seller_id) values (4, '
 insert into errand (id, anonymous_comment, archived_comment, comment, grade, is_Delivered, ordered_at_date, buyer_id) values (1, false, true, 'Komentar koji je arhiviran', 4, true, '2021-11-29', 2)
 insert into errand (id, anonymous_comment, archived_comment, comment, grade, is_Delivered, ordered_at_date, buyer_id) values (2, false, true, 'Drugi omentar koji je arhiviran', 4, true, '2021-11-29', 2)
 insert into errand (id, anonymous_comment, archived_comment, comment, grade, is_Delivered, ordered_at_date, buyer_id) values (3, false, true, 'Treci komentar koji je arhiviran', 7, false, '2022-01-01', 2)
+insert into errand (id, anonymous_comment, archived_comment, comment, grade, is_Delivered, ordered_at_date, buyer_id) values (4, false, true, 'Cetvrti komentar koji je arhiviran', 8, false, '2022-02-08', 2)
+
 
 insert into item (id, quantity, article_id, errand_id) values (1, 11, 1, 1)

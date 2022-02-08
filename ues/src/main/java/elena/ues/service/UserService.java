@@ -2,6 +2,7 @@ package elena.ues.service;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -52,7 +53,8 @@ public class UserService {
 		seller.setEmail(sellerRequest.getEmail());
 		seller.setFirstname(sellerRequest.getFirstname());
 		seller.setLastname(sellerRequest.getLastname());
-		seller.setOperatesSince(sellerRequest.getOperatesSince());
+		Date date = new Date();
+		seller.setOperatesSince(date);
 		seller.setPassword(sellerRequest.getPass());
 		seller.setStoreName(sellerRequest.getStoreName());
 		seller.setUsername(sellerRequest.getUsername());

@@ -89,7 +89,7 @@ public class UserController {
     @PutMapping("/changeBuyerPassword")
     public ResponseEntity<StringResponse> changeBuyerPassword(@RequestBody BuyerRequest dto, Principal principal) {
         try {
-        	buyerService.changePassword(dto, principal.getName());
+        	buyerService.changePassword(dto, "selenatutic@gmail.com");
             return new ResponseEntity<>(new StringResponse("Successful!"), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -99,7 +99,7 @@ public class UserController {
     @PutMapping("/changeSellerPassword")
     public ResponseEntity<StringResponse> changeSellerPassword(@RequestBody SellerRequest dto, Principal principal) {
         try {
-            sellerService.changePassword(dto, principal.getName());
+            sellerService.changePassword(dto, "elenakrunic@gmail.com");
             return new ResponseEntity<>(new StringResponse("Successful!"), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new StringResponse(e.getMessage()), HttpStatus.BAD_REQUEST);

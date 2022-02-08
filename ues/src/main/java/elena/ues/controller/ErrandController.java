@@ -3,8 +3,13 @@ package elena.ues.controller;
 import java.security.Principal;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +20,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
+
+import com.google.common.net.HttpHeaders;
+import com.itextpdf.html2pdf.ConverterProperties;
+import com.itextpdf.html2pdf.HtmlConverter;
+import com.itextpdf.io.source.ByteArrayOutputStream;
 
 import elena.ues.model.ArticleModel;
 import elena.ues.model.ArticleResponse;
@@ -31,11 +43,44 @@ import elena.ues.service.ErrandService;
 @CrossOrigin
 public class ErrandController {
 
+	@Autowired 
+	ServletContext servletContext; 
+	
+	private TemplateEngine templateEngine;
+	
 	@Autowired
 	private ErrandModelRepository errandModelRepository; 
 	
 	@Autowired 
 	private ErrandService errandService; 
+	
+	public ErrandController(TemplateEngine templateEngine) {
+		this.templateEngine = templateEngine;
+	}
+	
+	@RequestMapping(path="/errandPdf/{id}")
+	public ResponseEntity<?> getErrandPdf(@PathVariable("id") Long id,  HttpServletRequest req, HttpServletResponse res) {
+		ErrandModel errand = errandModelRepository.getById(id);
+		
+		WebContext context = new WebContext(req,res, servletContext);
+		context.setVariable("errandEntry", errand);
+		
+		String errandHTML = templateEngine.process("errand", context);
+		ByteArrayOutputStream target = new ByteArrayOutputStream();
+		ConverterProperties converterProperties = new ConverterProperties(); 
+		converterProperties.setBaseUri("http://localhost:8085");
+		
+		HtmlConverter.convertToPdf(errandHTML, target, converterProperties);
+		byte[] bytes = target.toByteArray();
+						
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=order.pdf")
+				.contentType(MediaType.APPLICATION_PDF)
+				.body(bytes);
+		
+		
+		
+
+	}
 	
 	@GetMapping(value="/errand/{id}")
 	public ResponseEntity<ErrandResponse> getOneErrand(@PathVariable("id") Long id) {

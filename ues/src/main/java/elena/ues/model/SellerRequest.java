@@ -20,7 +20,7 @@ public class SellerRequest {
 	private String firstname;
 	private String lastname;
 	private String email;
-	private Date operatesSince; 
+	private String operatesSince; 
 	private String storeName; 
 	private String username;
 
